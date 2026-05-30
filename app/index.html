@@ -94,6 +94,35 @@
       </div>
     </section>
 
+    <section class="validation-panel" id="validationPanel" aria-live="polite">
+      <div class="validation-header">
+        <div>
+          <span class="validation-eyebrow">Validation</span>
+          <h2 id="validationTitle">Not checked yet</h2>
+        </div>
+        <span id="validationBadge" class="validation-badge validation-badge-neutral">Idle</span>
+      </div>
+
+      <p id="validationMessage" class="validation-message">
+        Run validation or format JSON to inspect the current input.
+      </p>
+
+      <dl class="validation-details">
+        <div>
+          <dt>Line</dt>
+          <dd id="validationLine">—</dd>
+        </div>
+        <div>
+          <dt>Column</dt>
+          <dd id="validationColumn">—</dd>
+        </div>
+        <div>
+          <dt>Position</dt>
+          <dd id="validationPosition">—</dd>
+        </div>
+      </dl>
+    </section>
+
     <section class="shortcuts-panel" aria-label="Keyboard shortcuts">
       <span class="shortcut-item"><kbd>Ctrl</kbd> + <kbd>Enter</kbd> Format</span>
       <span class="shortcut-item"><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>M</kbd> Minify</span>
