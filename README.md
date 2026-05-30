@@ -2,11 +2,7 @@
 
 Beautiful JSON tooling for developers.
 
-<p>
-  <a href="https://www.paypal.com/paypalme/lucamezzolla82">
-    <img src="https://img.shields.io/badge/Support-Curv-635bff?style=for-the-badge&logo=paypal&logoColor=white" alt="Support Curv on PayPal" />
-  </a>
-</p>
+[![Donate with PayPal](https://img.shields.io/badge/Donate-PayPal-00457C?logo=paypal&logoColor=white)](https://www.paypal.com/paypalme/lucamezzolla82)
 
 Curv is a privacy-first, offline-ready JSON toolbox designed to help developers format, validate, inspect, compare and transform JSON with a clean and professional workflow.
 
