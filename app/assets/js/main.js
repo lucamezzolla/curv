@@ -4,6 +4,10 @@ import {
   createEmptyJsonStats,
   formatTextStats,
 } from "./core/analyzer.js";
+import {
+  indentSelection,
+  unindentSelection,
+} from "./core/editorCommands.js";
 import { formatJson, minifyJson } from "./core/formatter.js";
 import { validateJson } from "./core/validator.js";
 import { createJsonEditor } from "./ui/editor.js";
@@ -15,6 +19,7 @@ import {
 import { createNotificationCenter } from "./ui/notifications.js";
 
 const AUTO_FORMAT_PASTE_THRESHOLD = 25000;
+const LARGE_INPUT_WARNING_THRESHOLD = 250000;
 
 const elements = {
   input: document.querySelector("#jsonInput"),
@@ -24,6 +29,7 @@ const elements = {
   statusBar: document.querySelector(".status-bar"),
   statusMessage: document.querySelector("#statusMessage"),
   indentSize: document.querySelector("#indentSize"),
+  autoFormatPaste: document.querySelector("#autoFormatPaste"),
   formatButton: document.querySelector("#formatButton"),
   minifyButton: document.querySelector("#minifyButton"),
   validateButton: document.querySelector("#validateButton"),
@@ -56,6 +62,7 @@ function initializeApp() {
 
   editor.onInput(handleInputChange);
   editor.onPaste(handlePaste);
+  editor.onKeyDown(handleEditorKeyDown);
   document.addEventListener("keydown", handleKeyboardShortcuts);
 
   updateStats();
@@ -65,7 +72,7 @@ function initializeApp() {
 
 function handleFormat() {
   try {
-    const indentSize = Number(elements.indentSize.value);
+    const indentSize = getIndentSize();
     const formattedJson = formatJson(editor.getInput(), indentSize);
     const validation = validateJson(formattedJson);
 
@@ -164,6 +171,12 @@ async function handleFileUpload(event) {
     editor.setOutput("");
     updateStats();
     updateInspector("Not checked", createEmptyJsonStats());
+
+    if (content.length > LARGE_INPUT_WARNING_THRESHOLD) {
+      notifications.setStatus(`Loaded ${file.name}. Large file detected; formatting may take a moment.`, "warning");
+      return;
+    }
+
     notifications.setStatus(`Loaded ${file.name}.`, "success");
   } catch (error) {
     notifications.setStatus(error.message, "error");
@@ -173,12 +186,25 @@ async function handleFileUpload(event) {
 function handleInputChange() {
   updateStats();
   updateInspector("Not checked", createEmptyJsonStats());
+
+  if (editor.getInput().length > LARGE_INPUT_WARNING_THRESHOLD) {
+    notifications.setStatus("Large input detected; formatting may take a moment.", "warning");
+  }
 }
 
 function handlePaste(event) {
   const pastedText = event.clipboardData?.getData("text");
 
-  if (!pastedText || pastedText.length > AUTO_FORMAT_PASTE_THRESHOLD) {
+  if (!pastedText) {
+    return;
+  }
+
+  if (pastedText.length > LARGE_INPUT_WARNING_THRESHOLD) {
+    notifications.setStatus("Large paste detected; auto-format was skipped.", "warning");
+    return;
+  }
+
+  if (!elements.autoFormatPaste.checked || pastedText.length > AUTO_FORMAT_PASTE_THRESHOLD) {
     return;
   }
 
@@ -190,14 +216,34 @@ function handlePaste(event) {
 
   event.preventDefault();
 
-  const indentSize = Number(elements.indentSize.value);
-  const formattedJson = JSON.stringify(validation.data, null, indentSize);
+  const formattedJson = JSON.stringify(validation.data, null, getIndentSize());
 
   editor.setInput(formattedJson);
   editor.setOutput("");
   updateStats();
   updateInspectorFromValidation(validation);
   notifications.setStatus("Pasted JSON was formatted automatically.", "success");
+}
+
+function handleEditorKeyDown(event) {
+  if (event.key === "Tab") {
+    event.preventDefault();
+
+    if (event.shiftKey) {
+      unindentSelection(editor, getIndentSize());
+      updateStats();
+      return;
+    }
+
+    indentSelection(editor, " ".repeat(getIndentSize()));
+    updateStats();
+    return;
+  }
+
+  if (event.key === "Escape") {
+    event.preventDefault();
+    editor.blurInput();
+  }
 }
 
 function handleKeyboardShortcuts(event) {
@@ -263,6 +309,10 @@ function updateInspector(validity, stats) {
   elements.arraysValue.textContent = stats.arrays.toLocaleString();
   elements.keysValue.textContent = stats.keys.toLocaleString();
   elements.depthValue.textContent = stats.depth.toLocaleString();
+}
+
+function getIndentSize() {
+  return Number(elements.indentSize.value);
 }
 
 initializeApp();

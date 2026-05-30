@@ -17,8 +17,10 @@
 
 - Keyboard shortcuts
 - Auto-format on paste
-- Syntax highlighting
+- Tab and Shift+Tab indentation
+- Large input warnings
 - Better editor keyboard behavior
+- Syntax highlighting
 - More detailed validation panel
 - Theme preferences
 

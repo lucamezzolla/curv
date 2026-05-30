@@ -28,6 +28,40 @@ export function createJsonEditor(inputElement, outputElement) {
     inputElement.addEventListener("paste", callback);
   }
 
+  function onKeyDown(callback) {
+    inputElement.addEventListener("keydown", callback);
+  }
+
+  function insertAtSelection(value) {
+    const start = inputElement.selectionStart;
+    const end = inputElement.selectionEnd;
+    const currentValue = inputElement.value;
+
+    inputElement.value = `${currentValue.slice(0, start)}${value}${currentValue.slice(end)}`;
+    inputElement.selectionStart = start + value.length;
+    inputElement.selectionEnd = start + value.length;
+  }
+
+  function replaceSelection(start, end, value, cursorOffset = value.length) {
+    const currentValue = inputElement.value;
+
+    inputElement.value = `${currentValue.slice(0, start)}${value}${currentValue.slice(end)}`;
+    inputElement.selectionStart = start + cursorOffset;
+    inputElement.selectionEnd = start + cursorOffset;
+  }
+
+  function getSelection() {
+    return {
+      start: inputElement.selectionStart,
+      end: inputElement.selectionEnd,
+      value: inputElement.value.slice(inputElement.selectionStart, inputElement.selectionEnd),
+    };
+  }
+
+  function blurInput() {
+    inputElement.blur();
+  }
+
   function focusInput() {
     inputElement.focus();
   }
@@ -44,6 +78,11 @@ export function createJsonEditor(inputElement, outputElement) {
     clear,
     onInput,
     onPaste,
+    onKeyDown,
+    insertAtSelection,
+    replaceSelection,
+    getSelection,
+    blurInput,
     focusInput,
     selectOutput,
   };

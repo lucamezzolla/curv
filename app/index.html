@@ -81,6 +81,11 @@
       </div>
 
       <div class="toolbar-group">
+        <label class="toggle" for="autoFormatPaste">
+          <input id="autoFormatPaste" type="checkbox" checked />
+          <span>Auto-format paste</span>
+        </label>
+
         <label class="select-label" for="indentSize">Indent</label>
         <select id="indentSize" class="select">
           <option value="2">2 spaces</option>
@@ -95,6 +100,9 @@
       <span class="shortcut-item"><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> Validate</span>
       <span class="shortcut-item"><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>C</kbd> Copy</span>
       <span class="shortcut-item"><kbd>Ctrl</kbd> + <kbd>Backspace</kbd> Clear</span>
+      <span class="shortcut-item"><kbd>Tab</kbd> Indent</span>
+      <span class="shortcut-item"><kbd>Shift</kbd> + <kbd>Tab</kbd> Unindent</span>
+      <span class="shortcut-item"><kbd>Esc</kbd> Blur editor</span>
     </section>
 
     <section class="inspector">

@@ -29,7 +29,11 @@ Curv aims to become a complete JSON workspace for developers who need a fast, el
 - Copy output to clipboard
 - Clear workspace action
 - Keyboard shortcuts
+- Tab and Shift+Tab indentation
+- Escape to blur the input editor
 - Auto-format on paste for valid JSON
+- Optional auto-format paste toggle
+- Large input warnings
 - Configurable indentation
 - Input and output text statistics
 - Basic JSON structure analysis
@@ -46,6 +50,9 @@ Curv aims to become a complete JSON workspace for developers who need a fast, el
 | `Ctrl + Shift + V` / `Cmd + Shift + V` | Validate JSON |
 | `Ctrl + Shift + C` / `Cmd + Shift + C` | Copy output |
 | `Ctrl + Backspace` / `Cmd + Backspace` | Clear workspace |
+| `Tab` | Indent selection |
+| `Shift + Tab` | Unindent selection |
+| `Escape` | Blur input editor |
 
 ## Planned Features
 
@@ -70,6 +77,7 @@ app/
       main.js
       core/
         analyzer.js
+        editorCommands.js
         formatter.js
         validator.js
       ui/
