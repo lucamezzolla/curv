@@ -17,9 +17,11 @@ import {
   readTextFile,
 } from "./ui/fileActions.js";
 import { createNotificationCenter } from "./ui/notifications.js";
+import { createValidationPanel } from "./ui/validationPanel.js";
 
 const AUTO_FORMAT_PASTE_THRESHOLD = 25000;
 const LARGE_INPUT_WARNING_THRESHOLD = 250000;
+const AUTO_VALIDATION_DELAY = 400;
 
 const elements = {
   input: document.querySelector("#jsonInput"),
@@ -42,6 +44,13 @@ const elements = {
   arraysValue: document.querySelector("#arraysValue"),
   keysValue: document.querySelector("#keysValue"),
   depthValue: document.querySelector("#depthValue"),
+  validationPanel: document.querySelector("#validationPanel"),
+  validationTitle: document.querySelector("#validationTitle"),
+  validationBadge: document.querySelector("#validationBadge"),
+  validationMessage: document.querySelector("#validationMessage"),
+  validationLine: document.querySelector("#validationLine"),
+  validationColumn: document.querySelector("#validationColumn"),
+  validationPosition: document.querySelector("#validationPosition"),
 };
 
 const editor = createJsonEditor(elements.input, elements.output);
@@ -50,6 +59,18 @@ const notifications = createNotificationCenter(
   elements.statusBar,
   elements.statusMessage
 );
+
+const validationPanel = createValidationPanel({
+  panel: elements.validationPanel,
+  title: elements.validationTitle,
+  badge: elements.validationBadge,
+  message: elements.validationMessage,
+  line: elements.validationLine,
+  column: elements.validationColumn,
+  position: elements.validationPosition,
+});
+
+let autoValidationTimer = null;
 
 function initializeApp() {
   elements.formatButton.addEventListener("click", handleFormat);
@@ -67,10 +88,13 @@ function initializeApp() {
 
   updateStats();
   updateInspector("Not checked", createEmptyJsonStats());
+  validationPanel.setIdle();
   notifications.setStatus("Ready.", "neutral");
 }
 
 function handleFormat() {
+  window.clearTimeout(autoValidationTimer);
+
   try {
     const indentSize = getIndentSize();
     const formattedJson = formatJson(editor.getInput(), indentSize);
@@ -79,16 +103,22 @@ function handleFormat() {
     editor.setOutput(formattedJson);
     updateStats();
     updateInspectorFromValidation(validation);
+    validationPanel.setFromValidation(validation);
     notifications.setStatus("JSON formatted successfully.", "success");
   } catch (error) {
+    const validation = validateJson(editor.getInput());
+
     editor.setOutput("");
     updateStats();
-    updateInspectorFromValidation(validateJson(editor.getInput()));
+    updateInspectorFromValidation(validation);
+    validationPanel.setFromValidation(validation);
     notifications.setStatus(error.message, "error");
   }
 }
 
 function handleMinify() {
+  window.clearTimeout(autoValidationTimer);
+
   try {
     const minifiedJson = minifyJson(editor.getInput());
     const validation = validateJson(minifiedJson);
@@ -96,19 +126,26 @@ function handleMinify() {
     editor.setOutput(minifiedJson);
     updateStats();
     updateInspectorFromValidation(validation);
+    validationPanel.setFromValidation(validation);
     notifications.setStatus("JSON minified successfully.", "success");
   } catch (error) {
+    const validation = validateJson(editor.getInput());
+
     editor.setOutput("");
     updateStats();
-    updateInspectorFromValidation(validateJson(editor.getInput()));
+    updateInspectorFromValidation(validation);
+    validationPanel.setFromValidation(validation);
     notifications.setStatus(error.message, "error");
   }
 }
 
 function handleValidate() {
+  window.clearTimeout(autoValidationTimer);
+
   const validation = validateJson(editor.getInput());
 
   updateInspectorFromValidation(validation);
+  validationPanel.setFromValidation(validation);
 
   if (validation.valid) {
     notifications.setStatus("Valid JSON.", "success");
@@ -149,10 +186,13 @@ function handleDownload() {
 }
 
 function handleClear() {
+  window.clearTimeout(autoValidationTimer);
+
   editor.clear();
   elements.fileInput.value = "";
   updateStats();
   updateInspector("Not checked", createEmptyJsonStats());
+  validationPanel.setIdle();
   notifications.setStatus("Workspace cleared.", "neutral");
   editor.focusInput();
 }
@@ -164,6 +204,8 @@ async function handleFileUpload(event) {
     return;
   }
 
+  window.clearTimeout(autoValidationTimer);
+
   try {
     const content = await readTextFile(file);
 
@@ -171,12 +213,14 @@ async function handleFileUpload(event) {
     editor.setOutput("");
     updateStats();
     updateInspector("Not checked", createEmptyJsonStats());
+    validationPanel.setIdle();
 
     if (content.length > LARGE_INPUT_WARNING_THRESHOLD) {
-      notifications.setStatus(`Loaded ${file.name}. Large file detected; formatting may take a moment.`, "warning");
+      notifications.setStatus(`Loaded ${file.name}. Large file detected; automatic validation was skipped.`, "warning");
       return;
     }
 
+    scheduleAutomaticValidation();
     notifications.setStatus(`Loaded ${file.name}.`, "success");
   } catch (error) {
     notifications.setStatus(error.message, "error");
@@ -186,10 +230,38 @@ async function handleFileUpload(event) {
 function handleInputChange() {
   updateStats();
   updateInspector("Not checked", createEmptyJsonStats());
+  validationPanel.setIdle();
+  scheduleAutomaticValidation();
+}
 
-  if (editor.getInput().length > LARGE_INPUT_WARNING_THRESHOLD) {
-    notifications.setStatus("Large input detected; formatting may take a moment.", "warning");
+function scheduleAutomaticValidation() {
+  window.clearTimeout(autoValidationTimer);
+
+  const input = editor.getInput();
+
+  if (!input.trim()) {
+    notifications.setStatus("Ready.", "neutral");
+    return;
   }
+
+  if (input.length > LARGE_INPUT_WARNING_THRESHOLD) {
+    notifications.setStatus("Large input detected; automatic validation was skipped.", "warning");
+    return;
+  }
+
+  autoValidationTimer = window.setTimeout(() => {
+    const validation = validateJson(editor.getInput());
+
+    updateInspectorFromValidation(validation);
+    validationPanel.setFromValidation(validation);
+
+    if (validation.valid) {
+      notifications.setStatus("Valid JSON.", "success");
+      return;
+    }
+
+    notifications.setStatus(validation.message, "error");
+  }, AUTO_VALIDATION_DELAY);
 }
 
 function handlePaste(event) {
@@ -215,6 +287,7 @@ function handlePaste(event) {
   }
 
   event.preventDefault();
+  window.clearTimeout(autoValidationTimer);
 
   const formattedJson = JSON.stringify(validation.data, null, getIndentSize());
 
@@ -222,6 +295,7 @@ function handlePaste(event) {
   editor.setOutput("");
   updateStats();
   updateInspectorFromValidation(validation);
+  validationPanel.setFromValidation(validation);
   notifications.setStatus("Pasted JSON was formatted automatically.", "success");
 }
 
@@ -232,11 +306,13 @@ function handleEditorKeyDown(event) {
     if (event.shiftKey) {
       unindentSelection(editor, getIndentSize());
       updateStats();
+      scheduleAutomaticValidation();
       return;
     }
 
     indentSelection(editor, " ".repeat(getIndentSize()));
     updateStats();
+    scheduleAutomaticValidation();
     return;
   }
 

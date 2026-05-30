@@ -20,8 +20,9 @@
 - Tab and Shift+Tab indentation
 - Large input warnings
 - Better editor keyboard behavior
+- Dedicated validation details panel
+- Automatic JSON validation while typing
 - Syntax highlighting
-- More detailed validation panel
 - Theme preferences
 
 ## v0.3.0 — Tree View
