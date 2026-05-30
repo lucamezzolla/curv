@@ -68,16 +68,16 @@
 
     <section class="toolbar" aria-label="JSON actions">
       <div class="toolbar-group">
-        <button id="formatButton" class="button button-primary">Format</button>
-        <button id="minifyButton" class="button">Minify</button>
-        <button id="validateButton" class="button">Validate</button>
-        <button id="copyButton" class="button">Copy output</button>
+        <button id="formatButton" class="button button-primary" title="Ctrl + Enter">Format</button>
+        <button id="minifyButton" class="button" title="Ctrl + Shift + M">Minify</button>
+        <button id="validateButton" class="button" title="Ctrl + Shift + V">Validate</button>
+        <button id="copyButton" class="button" title="Ctrl + Shift + C">Copy output</button>
         <button id="downloadButton" class="button">Download</button>
 
         <label class="button file-button" for="fileInput">Upload</label>
         <input id="fileInput" class="file-input" type="file" accept=".json,application/json,text/plain" />
 
-        <button id="clearButton" class="button button-muted">Clear</button>
+        <button id="clearButton" class="button button-muted" title="Ctrl + Backspace">Clear</button>
       </div>
 
       <div class="toolbar-group">
@@ -87,6 +87,14 @@
           <option value="4">4 spaces</option>
         </select>
       </div>
+    </section>
+
+    <section class="shortcuts-panel" aria-label="Keyboard shortcuts">
+      <span class="shortcut-item"><kbd>Ctrl</kbd> + <kbd>Enter</kbd> Format</span>
+      <span class="shortcut-item"><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>M</kbd> Minify</span>
+      <span class="shortcut-item"><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> Validate</span>
+      <span class="shortcut-item"><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>C</kbd> Copy</span>
+      <span class="shortcut-item"><kbd>Ctrl</kbd> + <kbd>Backspace</kbd> Clear</span>
     </section>
 
     <section class="inspector">

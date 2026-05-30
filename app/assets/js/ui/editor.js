@@ -24,6 +24,14 @@ export function createJsonEditor(inputElement, outputElement) {
     inputElement.addEventListener("input", callback);
   }
 
+  function onPaste(callback) {
+    inputElement.addEventListener("paste", callback);
+  }
+
+  function focusInput() {
+    inputElement.focus();
+  }
+
   function selectOutput() {
     outputElement.select();
   }
@@ -35,6 +43,8 @@ export function createJsonEditor(inputElement, outputElement) {
     setOutput,
     clear,
     onInput,
+    onPaste,
+    focusInput,
     selectOutput,
   };
 }

@@ -17,9 +17,7 @@
   --font-mono: "JetBrains Mono", "Fira Code", Consolas, Monaco, monospace;
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
@@ -32,11 +30,7 @@ body {
     var(--color-bg);
 }
 
-button,
-textarea,
-select {
-  font: inherit;
-}
+button, textarea, select { font: inherit; }
 
 .app-shell {
   width: min(1440px, calc(100% - 32px));
@@ -122,16 +116,8 @@ select {
   background: rgba(255, 255, 255, 0.03);
 }
 
-.panel-header h2 {
-  margin: 0;
-  font-size: 1rem;
-}
-
-.panel-header p {
-  margin: 4px 0 0;
-  color: var(--color-muted);
-  font-size: 0.9rem;
-}
+.panel-header h2 { margin: 0; font-size: 1rem; }
+.panel-header p { margin: 4px 0 0; color: var(--color-muted); font-size: 0.9rem; }
 
 .panel-stat {
   color: var(--color-muted);
@@ -155,13 +141,8 @@ select {
   tab-size: 2;
 }
 
-.editor::placeholder {
-  color: rgba(143, 155, 183, 0.54);
-}
-
-.editor-output {
-  color: #dbeafe;
-}
+.editor::placeholder { color: rgba(143, 155, 183, 0.54); }
+.editor-output { color: #dbeafe; }
 
 .toolbar {
   display: flex;
@@ -176,14 +157,9 @@ select {
   backdrop-filter: blur(18px);
 }
 
-.toolbar-group {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+.toolbar-group { display: flex; align-items: center; gap: 10px; }
 
-.button,
-.select {
+.button, .select {
   min-height: 42px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
@@ -191,16 +167,14 @@ select {
   background: var(--color-surface-soft);
 }
 
-.button,
-.file-button {
+.button, .file-button {
   padding: 0 16px;
   cursor: pointer;
   font-weight: 700;
   transition: transform 140ms ease, background-color 140ms ease, border-color 140ms ease;
 }
 
-.button:hover,
-.file-button:hover {
+.button:hover, .file-button:hover {
   transform: translateY(-1px);
   border-color: rgba(255, 255, 255, 0.22);
 }
@@ -210,13 +184,8 @@ select {
   background: var(--color-primary);
 }
 
-.button-primary:hover {
-  background: var(--color-primary-hover);
-}
-
-.button-muted {
-  color: var(--color-muted);
-}
+.button-primary:hover { background: var(--color-primary-hover); }
+.button-muted { color: var(--color-muted); }
 
 .file-input {
   position: absolute;
@@ -236,14 +205,45 @@ select {
   background: var(--color-surface-soft);
 }
 
-.select {
-  padding: 0 12px;
-}
+.select { padding: 0 12px; }
 
 .select-label {
   color: var(--color-muted);
   font-size: 0.9rem;
   font-weight: 700;
+}
+
+.shortcuts-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+  color: var(--color-muted);
+  font-size: 0.82rem;
+}
+
+.shortcut-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: rgba(17, 24, 44, 0.52);
+}
+
+kbd {
+  display: inline-flex;
+  align-items: center;
+  min-height: 20px;
+  padding: 0 6px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-bottom-color: rgba(255, 255, 255, 0.28);
+  border-radius: 6px;
+  color: var(--color-text);
+  background: rgba(255, 255, 255, 0.07);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
 }
 
 .inspector {
@@ -285,54 +285,28 @@ select {
   color: var(--color-muted);
 }
 
-.status-bar.is-success {
-  color: var(--color-success);
-}
-
-.status-bar.is-error {
-  color: var(--color-danger);
-}
-
-.status-bar.is-warning {
-  color: var(--color-warning);
-}
+.status-bar.is-success { color: var(--color-success); }
+.status-bar.is-error { color: var(--color-danger); }
+.status-bar.is-warning { color: var(--color-warning); }
 
 @media (max-width: 1100px) {
-  .inspector {
-    grid-template-columns: repeat(3, 1fr);
-  }
+  .inspector { grid-template-columns: repeat(3, 1fr); }
 }
 
 @media (max-width: 900px) {
-  .app-header,
-  .toolbar {
+  .app-header, .toolbar {
     align-items: stretch;
     flex-direction: column;
   }
 
-  .workspace {
-    grid-template-columns: 1fr;
-  }
-
-  .panel {
-    min-height: 420px;
-  }
-
-  .editor {
-    height: 360px;
-  }
-
-  .toolbar-group {
-    flex-wrap: wrap;
-  }
-
-  .inspector {
-    grid-template-columns: 1fr 1fr;
-  }
+  .workspace { grid-template-columns: 1fr; }
+  .panel { min-height: 420px; }
+  .editor { height: 360px; }
+  .toolbar-group { flex-wrap: wrap; }
+  .inspector { grid-template-columns: 1fr 1fr; }
 }
 
 @media (max-width: 560px) {
-  .inspector {
-    grid-template-columns: 1fr;
-  }
+  .inspector { grid-template-columns: 1fr; }
+  .shortcuts-panel { display: none; }
 }

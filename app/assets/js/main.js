@@ -14,6 +14,8 @@ import {
 } from "./ui/fileActions.js";
 import { createNotificationCenter } from "./ui/notifications.js";
 
+const AUTO_FORMAT_PASTE_THRESHOLD = 25000;
+
 const elements = {
   input: document.querySelector("#jsonInput"),
   output: document.querySelector("#jsonOutput"),
@@ -53,6 +55,8 @@ function initializeApp() {
   elements.fileInput.addEventListener("change", handleFileUpload);
 
   editor.onInput(handleInputChange);
+  editor.onPaste(handlePaste);
+  document.addEventListener("keydown", handleKeyboardShortcuts);
 
   updateStats();
   updateInspector("Not checked", createEmptyJsonStats());
@@ -143,6 +147,7 @@ function handleClear() {
   updateStats();
   updateInspector("Not checked", createEmptyJsonStats());
   notifications.setStatus("Workspace cleared.", "neutral");
+  editor.focusInput();
 }
 
 async function handleFileUpload(event) {
@@ -168,6 +173,69 @@ async function handleFileUpload(event) {
 function handleInputChange() {
   updateStats();
   updateInspector("Not checked", createEmptyJsonStats());
+}
+
+function handlePaste(event) {
+  const pastedText = event.clipboardData?.getData("text");
+
+  if (!pastedText || pastedText.length > AUTO_FORMAT_PASTE_THRESHOLD) {
+    return;
+  }
+
+  const validation = validateJson(pastedText);
+
+  if (!validation.valid) {
+    return;
+  }
+
+  event.preventDefault();
+
+  const indentSize = Number(elements.indentSize.value);
+  const formattedJson = JSON.stringify(validation.data, null, indentSize);
+
+  editor.setInput(formattedJson);
+  editor.setOutput("");
+  updateStats();
+  updateInspectorFromValidation(validation);
+  notifications.setStatus("Pasted JSON was formatted automatically.", "success");
+}
+
+function handleKeyboardShortcuts(event) {
+  const key = event.key.toLowerCase();
+  const isModifierPressed = event.ctrlKey || event.metaKey;
+
+  if (!isModifierPressed) {
+    return;
+  }
+
+  if (event.key === "Enter") {
+    event.preventDefault();
+    handleFormat();
+    return;
+  }
+
+  if (event.shiftKey && key === "m") {
+    event.preventDefault();
+    handleMinify();
+    return;
+  }
+
+  if (event.shiftKey && key === "v") {
+    event.preventDefault();
+    handleValidate();
+    return;
+  }
+
+  if (event.shiftKey && key === "c") {
+    event.preventDefault();
+    handleCopy();
+    return;
+  }
+
+  if (event.key === "Backspace") {
+    event.preventDefault();
+    handleClear();
+  }
 }
 
 function updateStats() {

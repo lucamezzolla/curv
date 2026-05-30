@@ -28,12 +28,24 @@ Curv aims to become a complete JSON workspace for developers who need a fast, el
 - Output download
 - Copy output to clipboard
 - Clear workspace action
+- Keyboard shortcuts
+- Auto-format on paste for valid JSON
 - Configurable indentation
 - Input and output text statistics
 - Basic JSON structure analysis
 - Local-only processing
 - Modular JavaScript architecture
 - Responsive dark interface
+
+## Keyboard Shortcuts
+
+| Shortcut | Action |
+|---|---|
+| `Ctrl + Enter` / `Cmd + Enter` | Format JSON |
+| `Ctrl + Shift + M` / `Cmd + Shift + M` | Minify JSON |
+| `Ctrl + Shift + V` / `Cmd + Shift + V` | Validate JSON |
+| `Ctrl + Shift + C` / `Cmd + Shift + C` | Copy output |
+| `Ctrl + Backspace` / `Cmd + Backspace` | Clear workspace |
 
 ## Planned Features
 
@@ -78,7 +90,7 @@ docs/
 
 Curv is currently in early development.
 
-The current version provides a working browser-based formatter interface with formatting, minification, validation, file upload, output download, copy, clear and basic text/structure statistics.
+The current version provides a working browser-based formatter interface with formatting, minification, validation, file upload, output download, copy, clear, keyboard shortcuts and basic text/structure statistics.
 
 The next milestone focuses on syntax highlighting, tree view and stronger developer-focused inspection tools.
 
@@ -158,12 +170,16 @@ git checkout development
 
 ## Versioning
 
-Curv does not have a tagged release yet.
-
-The first planned tag will be:
+The first foundation release is:
 
 ```text
 v0.1.0
+```
+
+The current development track is:
+
+```text
+v0.2.0 — Editor Experience
 ```
 
 ## License

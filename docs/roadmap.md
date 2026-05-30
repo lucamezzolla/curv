@@ -15,9 +15,10 @@
 
 ## v0.2.0 — Editor Experience
 
+- Keyboard shortcuts
+- Auto-format on paste
 - Syntax highlighting
 - Better editor keyboard behavior
-- Auto-format on paste
 - More detailed validation panel
 - Theme preferences
 
