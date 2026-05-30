@@ -104,6 +104,7 @@ function handleFormat() {
     updateStats();
     updateInspectorFromValidation(validation);
     validationPanel.setFromValidation(validation);
+    revealValidationPanel();
     notifications.setStatus("JSON formatted successfully.", "success");
   } catch (error) {
     const validation = validateJson(editor.getInput());
@@ -112,6 +113,7 @@ function handleFormat() {
     updateStats();
     updateInspectorFromValidation(validation);
     validationPanel.setFromValidation(validation);
+    revealValidationPanel();
     notifications.setStatus(error.message, "error");
   }
 }
@@ -127,6 +129,7 @@ function handleMinify() {
     updateStats();
     updateInspectorFromValidation(validation);
     validationPanel.setFromValidation(validation);
+    revealValidationPanel();
     notifications.setStatus("JSON minified successfully.", "success");
   } catch (error) {
     const validation = validateJson(editor.getInput());
@@ -135,6 +138,7 @@ function handleMinify() {
     updateStats();
     updateInspectorFromValidation(validation);
     validationPanel.setFromValidation(validation);
+    revealValidationPanel();
     notifications.setStatus(error.message, "error");
   }
 }
@@ -146,6 +150,7 @@ function handleValidate() {
 
   updateInspectorFromValidation(validation);
   validationPanel.setFromValidation(validation);
+  revealValidationPanel();
 
   if (validation.valid) {
     notifications.setStatus("Valid JSON.", "success");
@@ -254,6 +259,7 @@ function scheduleAutomaticValidation() {
 
     updateInspectorFromValidation(validation);
     validationPanel.setFromValidation(validation);
+    revealValidationPanel();
 
     if (validation.valid) {
       notifications.setStatus("Valid JSON.", "success");
@@ -296,6 +302,7 @@ function handlePaste(event) {
   updateStats();
   updateInspectorFromValidation(validation);
   validationPanel.setFromValidation(validation);
+  revealValidationPanel();
   notifications.setStatus("Pasted JSON was formatted automatically.", "success");
 }
 
@@ -358,6 +365,25 @@ function handleKeyboardShortcuts(event) {
     event.preventDefault();
     handleClear();
   }
+}
+
+
+function revealValidationPanel({ scroll = true } = {}) {
+  validationPanel.flash();
+
+  if (!scroll) {
+    return;
+  }
+
+  window.requestAnimationFrame(() => {
+    const panelTop = elements.validationPanel.getBoundingClientRect().top + window.scrollY;
+    const scrollOffset = 24;
+
+    window.scrollTo({
+      top: Math.max(panelTop - scrollOffset, 0),
+      behavior: "smooth",
+    });
+  });
 }
 
 function updateStats() {

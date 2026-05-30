@@ -25,6 +25,7 @@ Curv aims to become a complete JSON workspace for developers who need a fast, el
 - JSON validation workflow
 - Automatic JSON validation while typing
 - Dedicated validation details panel
+- Validation panel focus and flash feedback
 - Improved JSON error details when available
 - JSON file upload
 - Output download

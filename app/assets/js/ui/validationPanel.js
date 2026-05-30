@@ -52,6 +52,14 @@ export function createValidationPanel(elements) {
     setInvalid(validation.error);
   }
 
+  function flash() {
+    elements.panel.classList.remove("is-flashing");
+
+    window.requestAnimationFrame(() => {
+      elements.panel.classList.add("is-flashing");
+    });
+  }
+
   function setPanelState(state) {
     elements.panel.classList.remove(PANEL_CLASSES.valid, PANEL_CLASSES.invalid);
     elements.badge.classList.remove(
@@ -90,5 +98,6 @@ export function createValidationPanel(elements) {
     setValid,
     setInvalid,
     setFromValidation,
+    flash,
   };
 }

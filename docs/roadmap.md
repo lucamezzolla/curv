@@ -22,6 +22,7 @@
 - Better editor keyboard behavior
 - Dedicated validation details panel
 - Automatic JSON validation while typing
+- Validation panel focus and flash feedback
 - Syntax highlighting
 - Theme preferences
 
