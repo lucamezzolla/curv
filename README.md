@@ -16,10 +16,21 @@ Curv aims to become a complete JSON workspace for developers who need a fast, el
 - Elegant by default: professional interface and maintainable code.
 - Extensible architecture: built to grow from formatter to full JSON studio.
 
+## Current Features
+
+- Browser-based JSON formatter
+- JSON minifier
+- Copy output to clipboard
+- Clear workspace action
+- Configurable indentation
+- Input and output text statistics
+- Local-only processing
+- Modular JavaScript architecture
+- Responsive dark interface
+
 ## Planned Features
 
-- JSON formatting and minification
-- JSON validation
+- Improved JSON validation messages
 - Syntax highlighting
 - Tree view for nested data
 - JSON diff and comparison
