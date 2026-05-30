@@ -1,6 +1,7 @@
 const STATUS_CLASSES = {
   success: "is-success",
   error: "is-error",
+  warning: "is-warning",
 };
 
 export function createNotificationCenter(statusBarElement, statusMessageElement) {
@@ -9,7 +10,8 @@ export function createNotificationCenter(statusBarElement, statusMessageElement)
 
     statusBarElement.classList.remove(
       STATUS_CLASSES.success,
-      STATUS_CLASSES.error
+      STATUS_CLASSES.error,
+      STATUS_CLASSES.warning
     );
 
     if (type === "success") {
@@ -18,6 +20,10 @@ export function createNotificationCenter(statusBarElement, statusMessageElement)
 
     if (type === "error") {
       statusBarElement.classList.add(STATUS_CLASSES.error);
+    }
+
+    if (type === "warning") {
+      statusBarElement.classList.add(STATUS_CLASSES.warning);
     }
   }
 

@@ -1,4 +1,18 @@
+import {
+  analyzeJsonStructure,
+  analyzeText,
+  createEmptyJsonStats,
+  formatTextStats,
+} from "./core/analyzer.js";
 import { formatJson, minifyJson } from "./core/formatter.js";
+import { validateJson } from "./core/validator.js";
+import { createJsonEditor } from "./ui/editor.js";
+import {
+  createOutputFilename,
+  downloadTextFile,
+  readTextFile,
+} from "./ui/fileActions.js";
+import { createNotificationCenter } from "./ui/notifications.js";
 
 const elements = {
   input: document.querySelector("#jsonInput"),
@@ -10,95 +24,177 @@ const elements = {
   indentSize: document.querySelector("#indentSize"),
   formatButton: document.querySelector("#formatButton"),
   minifyButton: document.querySelector("#minifyButton"),
+  validateButton: document.querySelector("#validateButton"),
   copyButton: document.querySelector("#copyButton"),
+  downloadButton: document.querySelector("#downloadButton"),
   clearButton: document.querySelector("#clearButton"),
+  fileInput: document.querySelector("#fileInput"),
+  validityValue: document.querySelector("#validityValue"),
+  objectsValue: document.querySelector("#objectsValue"),
+  arraysValue: document.querySelector("#arraysValue"),
+  keysValue: document.querySelector("#keysValue"),
+  depthValue: document.querySelector("#depthValue"),
 };
+
+const editor = createJsonEditor(elements.input, elements.output);
+
+const notifications = createNotificationCenter(
+  elements.statusBar,
+  elements.statusMessage
+);
 
 function initializeApp() {
   elements.formatButton.addEventListener("click", handleFormat);
   elements.minifyButton.addEventListener("click", handleMinify);
+  elements.validateButton.addEventListener("click", handleValidate);
   elements.copyButton.addEventListener("click", handleCopy);
+  elements.downloadButton.addEventListener("click", handleDownload);
   elements.clearButton.addEventListener("click", handleClear);
-  elements.input.addEventListener("input", updateStats);
+  elements.fileInput.addEventListener("change", handleFileUpload);
+
+  editor.onInput(handleInputChange);
 
   updateStats();
-  setStatus("Ready.", "neutral");
+  updateInspector("Not checked", createEmptyJsonStats());
+  notifications.setStatus("Ready.", "neutral");
 }
 
 function handleFormat() {
   try {
     const indentSize = Number(elements.indentSize.value);
-    const formattedJson = formatJson(elements.input.value, indentSize);
+    const formattedJson = formatJson(editor.getInput(), indentSize);
+    const validation = validateJson(formattedJson);
 
-    elements.output.value = formattedJson;
+    editor.setOutput(formattedJson);
     updateStats();
-    setStatus("JSON formatted successfully.", "success");
+    updateInspectorFromValidation(validation);
+    notifications.setStatus("JSON formatted successfully.", "success");
   } catch (error) {
-    elements.output.value = "";
+    editor.setOutput("");
     updateStats();
-    setStatus(error.message, "error");
+    updateInspectorFromValidation(validateJson(editor.getInput()));
+    notifications.setStatus(error.message, "error");
   }
 }
 
 function handleMinify() {
   try {
-    const minifiedJson = minifyJson(elements.input.value);
+    const minifiedJson = minifyJson(editor.getInput());
+    const validation = validateJson(minifiedJson);
 
-    elements.output.value = minifiedJson;
+    editor.setOutput(minifiedJson);
     updateStats();
-    setStatus("JSON minified successfully.", "success");
+    updateInspectorFromValidation(validation);
+    notifications.setStatus("JSON minified successfully.", "success");
   } catch (error) {
-    elements.output.value = "";
+    editor.setOutput("");
     updateStats();
-    setStatus(error.message, "error");
+    updateInspectorFromValidation(validateJson(editor.getInput()));
+    notifications.setStatus(error.message, "error");
   }
 }
 
+function handleValidate() {
+  const validation = validateJson(editor.getInput());
+
+  updateInspectorFromValidation(validation);
+
+  if (validation.valid) {
+    notifications.setStatus("Valid JSON.", "success");
+    return;
+  }
+
+  notifications.setStatus(validation.message, "error");
+}
+
 async function handleCopy() {
-  const value = elements.output.value;
+  const value = editor.getOutput();
 
   if (!value) {
-    setStatus("There is no output to copy.", "error");
+    notifications.setStatus("There is no output to copy.", "error");
     return;
   }
 
   try {
     await navigator.clipboard.writeText(value);
-    setStatus("Output copied to clipboard.", "success");
+    notifications.setStatus("Output copied to clipboard.", "success");
   } catch {
-    elements.output.select();
+    editor.selectOutput();
     document.execCommand("copy");
-    setStatus("Output copied to clipboard.", "success");
+    notifications.setStatus("Output copied to clipboard.", "success");
   }
+}
+
+function handleDownload() {
+  const value = editor.getOutput();
+
+  if (!value) {
+    notifications.setStatus("There is no output to download.", "error");
+    return;
+  }
+
+  downloadTextFile(createOutputFilename(), value);
+  notifications.setStatus("Output downloaded successfully.", "success");
 }
 
 function handleClear() {
-  elements.input.value = "";
-  elements.output.value = "";
+  editor.clear();
+  elements.fileInput.value = "";
   updateStats();
-  setStatus("Workspace cleared.", "neutral");
+  updateInspector("Not checked", createEmptyJsonStats());
+  notifications.setStatus("Workspace cleared.", "neutral");
+}
+
+async function handleFileUpload(event) {
+  const [file] = event.target.files;
+
+  if (!file) {
+    return;
+  }
+
+  try {
+    const content = await readTextFile(file);
+
+    editor.setInput(content);
+    editor.setOutput("");
+    updateStats();
+    updateInspector("Not checked", createEmptyJsonStats());
+    notifications.setStatus(`Loaded ${file.name}.`, "success");
+  } catch (error) {
+    notifications.setStatus(error.message, "error");
+  }
+}
+
+function handleInputChange() {
+  updateStats();
+  updateInspector("Not checked", createEmptyJsonStats());
 }
 
 function updateStats() {
-  elements.inputStats.textContent = formatCharacterCount(elements.input.value.length);
-  elements.outputStats.textContent = formatCharacterCount(elements.output.value.length);
+  elements.inputStats.textContent = formatTextStats(
+    analyzeText(editor.getInput())
+  );
+
+  elements.outputStats.textContent = formatTextStats(
+    analyzeText(editor.getOutput())
+  );
 }
 
-function formatCharacterCount(count) {
-  return `${count.toLocaleString()} chars`;
+function updateInspectorFromValidation(validation) {
+  if (!validation.valid) {
+    updateInspector("Invalid", createEmptyJsonStats());
+    return;
+  }
+
+  updateInspector("Valid", analyzeJsonStructure(validation.data));
 }
 
-function setStatus(message, type = "neutral") {
-  elements.statusMessage.textContent = message;
-  elements.statusBar.classList.remove("is-success", "is-error");
-
-  if (type === "success") {
-    elements.statusBar.classList.add("is-success");
-  }
-
-  if (type === "error") {
-    elements.statusBar.classList.add("is-error");
-  }
+function updateInspector(validity, stats) {
+  elements.validityValue.textContent = validity;
+  elements.objectsValue.textContent = stats.objects.toLocaleString();
+  elements.arraysValue.textContent = stats.arrays.toLocaleString();
+  elements.keysValue.textContent = stats.keys.toLocaleString();
+  elements.depthValue.textContent = stats.depth.toLocaleString();
 }
 
 initializeApp();

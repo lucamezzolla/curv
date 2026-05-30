@@ -34,9 +34,9 @@
         <div class="panel-header">
           <div>
             <h2>Input</h2>
-            <p>Paste or write JSON here.</p>
+            <p>Paste, write or upload JSON here.</p>
           </div>
-          <span id="inputStats" class="panel-stat">0 chars</span>
+          <span id="inputStats" class="panel-stat">0 chars · 0 lines</span>
         </div>
 
         <textarea
@@ -53,7 +53,7 @@
             <h2>Output</h2>
             <p>Formatted or minified JSON appears here.</p>
           </div>
-          <span id="outputStats" class="panel-stat">0 chars</span>
+          <span id="outputStats" class="panel-stat">0 chars · 0 lines</span>
         </div>
 
         <textarea
@@ -66,11 +66,17 @@
       </section>
     </main>
 
-    <section class="toolbar">
+    <section class="toolbar" aria-label="JSON actions">
       <div class="toolbar-group">
         <button id="formatButton" class="button button-primary">Format</button>
         <button id="minifyButton" class="button">Minify</button>
+        <button id="validateButton" class="button">Validate</button>
         <button id="copyButton" class="button">Copy output</button>
+        <button id="downloadButton" class="button">Download</button>
+
+        <label class="button file-button" for="fileInput">Upload</label>
+        <input id="fileInput" class="file-input" type="file" accept=".json,application/json,text/plain" />
+
         <button id="clearButton" class="button button-muted">Clear</button>
       </div>
 
@@ -80,6 +86,29 @@
           <option value="2">2 spaces</option>
           <option value="4">4 spaces</option>
         </select>
+      </div>
+    </section>
+
+    <section class="inspector">
+      <div class="inspector-card">
+        <span class="inspector-label">Validity</span>
+        <strong id="validityValue">Not checked</strong>
+      </div>
+      <div class="inspector-card">
+        <span class="inspector-label">Objects</span>
+        <strong id="objectsValue">0</strong>
+      </div>
+      <div class="inspector-card">
+        <span class="inspector-label">Arrays</span>
+        <strong id="arraysValue">0</strong>
+      </div>
+      <div class="inspector-card">
+        <span class="inspector-label">Keys</span>
+        <strong id="keysValue">0</strong>
+      </div>
+      <div class="inspector-card">
+        <span class="inspector-label">Depth</span>
+        <strong id="depthValue">0</strong>
       </div>
     </section>
 

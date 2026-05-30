@@ -3,6 +3,10 @@ export function createJsonEditor(inputElement, outputElement) {
     return inputElement.value;
   }
 
+  function setInput(value) {
+    inputElement.value = value;
+  }
+
   function getOutput() {
     return outputElement.value;
   }
@@ -26,6 +30,7 @@ export function createJsonEditor(inputElement, outputElement) {
 
   return {
     getInput,
+    setInput,
     getOutput,
     setOutput,
     clear,

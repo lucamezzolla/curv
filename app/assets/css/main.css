@@ -9,6 +9,7 @@
   --color-primary-hover: #7c3aed;
   --color-danger: #fb7185;
   --color-success: #34d399;
+  --color-warning: #fbbf24;
   --radius-lg: 22px;
   --radius-md: 14px;
   --shadow-soft: 0 24px 80px rgba(0, 0, 0, 0.35);
@@ -190,14 +191,16 @@ select {
   background: var(--color-surface-soft);
 }
 
-.button {
+.button,
+.file-button {
   padding: 0 16px;
   cursor: pointer;
   font-weight: 700;
   transition: transform 140ms ease, background-color 140ms ease, border-color 140ms ease;
 }
 
-.button:hover {
+.button:hover,
+.file-button:hover {
   transform: translateY(-1px);
   border-color: rgba(255, 255, 255, 0.22);
 }
@@ -215,6 +218,24 @@ select {
   color: var(--color-muted);
 }
 
+.file-input {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.file-button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 42px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  background: var(--color-surface-soft);
+}
+
 .select {
   padding: 0 12px;
 }
@@ -223,6 +244,36 @@ select {
   color: var(--color-muted);
   font-size: 0.9rem;
   font-weight: 700;
+}
+
+.inspector {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.inspector-card {
+  padding: 14px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: rgba(17, 24, 44, 0.72);
+  backdrop-filter: blur(18px);
+}
+
+.inspector-label {
+  display: block;
+  color: var(--color-muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.inspector-card strong {
+  display: block;
+  margin-top: 6px;
+  font-size: 1.2rem;
 }
 
 .status-bar {
@@ -240,6 +291,16 @@ select {
 
 .status-bar.is-error {
   color: var(--color-danger);
+}
+
+.status-bar.is-warning {
+  color: var(--color-warning);
+}
+
+@media (max-width: 1100px) {
+  .inspector {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 @media (max-width: 900px) {
@@ -263,5 +324,15 @@ select {
 
   .toolbar-group {
     flex-wrap: wrap;
+  }
+
+  .inspector {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .inspector {
+    grid-template-columns: 1fr;
   }
 }
