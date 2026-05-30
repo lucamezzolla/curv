@@ -67,3 +67,100 @@ desktop/
 docs/
   privacy.md
   roadmap.md
+```
+
+## Project Status
+
+Curv is currently in early development.
+
+The current version provides a first working browser-based formatter interface with formatting, minification, copy, clear and basic text statistics.
+
+The next milestone focuses on improved JSON validation, better error reporting and stronger developer-focused UX.
+
+## Running Locally
+
+Curv is a static web application. It does not require a backend, but it should be served through a local HTTP server because the app uses JavaScript modules.
+
+From the project root, open the app at:
+
+```text
+http://localhost:8080/app/
+```
+
+### Option 1: Python 3
+
+```bash
+python3 -m http.server 8080
+```
+
+### Option 2: Node.js with `npx serve`
+
+```bash
+npx serve . -l 8080
+```
+
+### Option 3: Node.js with `npx http-server`
+
+```bash
+npx http-server . -p 8080
+```
+
+### Option 4: PHP built-in server
+
+```bash
+php -S localhost:8080
+```
+
+### Option 5: Ruby
+
+```bash
+ruby -run -e httpd . -p 8080
+```
+
+### Option 6: BusyBox
+
+```bash
+busybox httpd -f -p 8080
+```
+
+### Option 7: VS Code / VSCodium Live Server
+
+You can also use a Live Server extension from VS Code or VSCodium.
+
+Open the project folder, start the local server from the editor, then open the generated local URL and navigate to:
+
+```text
+/app/
+```
+
+### Why a local server?
+
+Opening `app/index.html` directly from the filesystem may not work correctly in some browsers because Curv uses ES modules:
+
+```html
+<script type="module" src="./assets/js/main.js"></script>
+```
+
+Using a local HTTP server ensures the app behaves like it would in production.
+
+## Development Branch
+
+This project currently uses `development` as the active working branch.
+
+```bash
+git checkout development
+```
+
+## Versioning
+
+Curv does not have a tagged release yet.
+
+The first planned tag will be:
+
+```text
+v0.1.0
+```
+
+## License
+
+To be defined.
