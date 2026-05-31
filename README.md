@@ -130,6 +130,7 @@ desktop/
 
 docs/
   privacy.md
+  publishing.md
   roadmap.md
 ```
 
@@ -226,7 +227,7 @@ v0.1.0
 The current development track is:
 
 ```text
-v0.7.0 — Export & Preferences
+v0.8.0 — Publishing
 ```
 
 ## License

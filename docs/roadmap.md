@@ -82,3 +82,12 @@
 - Remember auto-format paste preference
 - Remember converter target preference
 - Download converted output with format-aware file extensions
+
+
+## v0.8.0 — Publishing
+
+- Publish-ready metadata
+- SVG favicon
+- Web app manifest
+- Social preview image
+- GitHub Pages publishing notes
