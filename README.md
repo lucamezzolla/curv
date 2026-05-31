@@ -6,6 +6,14 @@ Beautiful JSON tooling for developers.
 
 Curv is a privacy-first, offline-ready JSON toolbox designed to help developers format, validate, inspect, compare and transform JSON with a clean and professional workflow.
 
+## Live Demo
+
+Curv is designed to be published on GitHub Pages:
+
+```text
+https://lucamezzolla.github.io/curv/
+```
+
 ## Vision
 
 Curv aims to become a complete JSON workspace for developers who need a fast, elegant and reliable tool for everyday API, backend, configuration and data inspection tasks.

@@ -91,3 +91,6 @@
 - Web app manifest
 - Social preview image
 - GitHub Pages publishing notes
+- GitHub Pages deployment workflow
+- robots.txt
+- sitemap.xml

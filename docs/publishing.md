@@ -1,5 +1,12 @@
 # Publishing Curv
 
+Public URL:
+
+```text
+https://lucamezzolla.github.io/curv/
+```
+
+
 Curv is a static web application and can be published with GitHub Pages or any static hosting provider.
 
 ## GitHub Pages
@@ -45,3 +52,28 @@ Run a full smoke test:
 Curv does not require a backend.
 
 All processing happens locally in the browser.
+
+
+## GitHub Actions Deployment
+
+Curv includes a GitHub Actions workflow at:
+
+```text
+.github/workflows/pages.yml
+```
+
+The workflow deploys the `app/` directory as the root of the GitHub Pages site.
+
+Required GitHub repository setting:
+
+```text
+Settings → Pages → Build and deployment → Source: GitHub Actions
+```
+
+The workflow runs automatically on pushes to:
+
+```text
+development
+```
+
+It can also be started manually from the Actions tab.
