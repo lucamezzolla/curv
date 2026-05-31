@@ -497,6 +497,103 @@ kbd {
 
 
 
+
+.schema-query-panel {
+  margin-top: 18px;
+  padding: 18px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: rgba(17, 24, 44, 0.72);
+  backdrop-filter: blur(18px);
+}
+
+.schema-query-panel.is-flashing {
+  animation: treeFlash 900ms ease;
+}
+
+.schema-query-panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.schema-query-eyebrow {
+  display: block;
+  color: var(--color-muted);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.schema-query-panel h2 {
+  margin: 5px 0 0;
+  font-size: 1.05rem;
+}
+
+.schema-query-panel p {
+  margin: 7px 0 0;
+  color: var(--color-muted);
+}
+
+.schema-query-actions,
+.schema-query-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.schema-query-bar {
+  justify-content: flex-start;
+  margin-top: 16px;
+}
+
+.schema-query-path-label {
+  color: var(--color-muted);
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.schema-query-path-input {
+  flex: 1;
+  min-width: min(420px, 100%);
+  min-height: 42px;
+  padding: 0 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  background: var(--color-surface-soft);
+  outline: none;
+  font-family: var(--font-mono);
+}
+
+.schema-query-meta {
+  margin-top: 14px;
+  color: var(--color-muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.schema-query-output {
+  display: block;
+  width: 100%;
+  min-height: 260px;
+  margin-top: 12px;
+  padding: 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  outline: none;
+  resize: vertical;
+  color: var(--color-text);
+  background: rgba(11, 16, 32, 0.5);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
 .converter-panel {
   margin-top: 18px;
   padding: 18px;
@@ -1111,12 +1208,14 @@ kbd {
     grid-template-columns: 1fr;
   }
 
+  .schema-query-panel-header,
   .converter-panel-header,
   .diff-panel-header,
   .tree-panel-header {
     flex-direction: column;
   }
 
+  .schema-query-actions,
   .converter-actions,
   .diff-actions,
   .tree-actions {

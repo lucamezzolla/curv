@@ -12,6 +12,12 @@ import { formatJson, minifyJson } from "./core/formatter.js";
 import { convertJson } from "./core/converter.js";
 import { compareJson } from "./core/diffEngine.js";
 import {
+  flattenJson,
+  queryJson,
+  unflattenJson,
+} from "./core/queryTools.js";
+import { generateJsonSchema } from "./core/schemaGenerator.js";
+import {
   removeNullValues,
   sortJsonKeys,
 } from "./core/transformer.js";
@@ -25,6 +31,7 @@ import {
   readTextFile,
 } from "./ui/fileActions.js";
 import { createNotificationCenter } from "./ui/notifications.js";
+import { createSchemaQueryView } from "./ui/schemaQueryView.js";
 import { createTreeView } from "./ui/treeView.js";
 import { createValidationPanel } from "./ui/validationPanel.js";
 
@@ -48,6 +55,7 @@ const elements = {
   removeNullsButton: document.querySelector("#removeNullsButton"),
   compareButton: document.querySelector("#compareButton"),
   converterJumpButton: document.querySelector("#converterJumpButton"),
+  schemaQueryJumpButton: document.querySelector("#schemaQueryJumpButton"),
   copyButton: document.querySelector("#copyButton"),
   downloadButton: document.querySelector("#downloadButton"),
   clearButton: document.querySelector("#clearButton"),
@@ -93,6 +101,16 @@ const elements = {
   clearConvertedButton: document.querySelector("#clearConvertedButton"),
   converterStats: document.querySelector("#converterStats"),
   converterOutput: document.querySelector("#converterOutput"),
+  schemaQueryPanel: document.querySelector("#schemaQueryPanel"),
+  generateSchemaButton: document.querySelector("#generateSchemaButton"),
+  flattenJsonButton: document.querySelector("#flattenJsonButton"),
+  unflattenJsonButton: document.querySelector("#unflattenJsonButton"),
+  copySchemaQueryButton: document.querySelector("#copySchemaQueryButton"),
+  clearSchemaQueryButton: document.querySelector("#clearSchemaQueryButton"),
+  jsonPathInput: document.querySelector("#jsonPathInput"),
+  runJsonPathButton: document.querySelector("#runJsonPathButton"),
+  schemaQueryStats: document.querySelector("#schemaQueryStats"),
+  schemaQueryOutput: document.querySelector("#schemaQueryOutput"),
 };
 
 const editor = createJsonEditor(elements.input, elements.output);
@@ -100,6 +118,28 @@ const editor = createJsonEditor(elements.input, elements.output);
 const notifications = createNotificationCenter(
   elements.statusBar,
   elements.statusMessage
+);
+
+const schemaQueryView = createSchemaQueryView(
+  {
+    panel: elements.schemaQueryPanel,
+    generateSchemaButton: elements.generateSchemaButton,
+    runQueryButton: elements.runJsonPathButton,
+    flattenButton: elements.flattenJsonButton,
+    unflattenButton: elements.unflattenJsonButton,
+    copyButton: elements.copySchemaQueryButton,
+    clearButton: elements.clearSchemaQueryButton,
+    pathInput: elements.jsonPathInput,
+    stats: elements.schemaQueryStats,
+    output: elements.schemaQueryOutput,
+  },
+  {
+    onGenerateSchema: handleGenerateSchema,
+    onRunQuery: handleRunJsonPath,
+    onFlatten: handleFlattenJson,
+    onUnflatten: handleUnflattenJson,
+    onStatus: (message, type) => notifications.setStatus(message, type),
+  }
 );
 
 const converterView = createConverterView(
@@ -177,6 +217,7 @@ function initializeApp() {
   elements.removeNullsButton.addEventListener("click", handleRemoveNulls);
   elements.compareButton.addEventListener("click", revealDiffPanel);
   elements.converterJumpButton.addEventListener("click", revealConverterPanel);
+  elements.schemaQueryJumpButton.addEventListener("click", revealSchemaQueryPanel);
   elements.runDiffButton.addEventListener("click", handleCompareJson);
   elements.copyButton.addEventListener("click", handleCopy);
   elements.downloadButton.addEventListener("click", handleDownload);
@@ -311,6 +352,57 @@ function handleRemoveNulls() {
     revealValidationPanel();
     notifications.setStatus(error.message, "error");
   }
+}
+
+function handleGenerateSchema() {
+  try {
+    schemaQueryView.setOutput(generateJsonSchema(editor.getInput()));
+    revealSchemaQueryPanel();
+    notifications.setStatus("JSON Schema generated successfully.", "success");
+  } catch (error) {
+    revealSchemaQueryPanel();
+    notifications.setStatus(error.message, "error");
+  }
+}
+
+function handleRunJsonPath() {
+  try {
+    schemaQueryView.setOutput(queryJson(editor.getInput(), schemaQueryView.getPathExpression()));
+    revealSchemaQueryPanel();
+    notifications.setStatus("Path query completed successfully.", "success");
+  } catch (error) {
+    revealSchemaQueryPanel();
+    notifications.setStatus(error.message, "error");
+  }
+}
+
+function handleFlattenJson() {
+  try {
+    schemaQueryView.setOutput(flattenJson(editor.getInput()));
+    revealSchemaQueryPanel();
+    notifications.setStatus("JSON flattened successfully.", "success");
+  } catch (error) {
+    revealSchemaQueryPanel();
+    notifications.setStatus(error.message, "error");
+  }
+}
+
+function handleUnflattenJson() {
+  try {
+    schemaQueryView.setOutput(unflattenJson(editor.getInput()));
+    revealSchemaQueryPanel();
+    notifications.setStatus("JSON unflattened successfully.", "success");
+  } catch (error) {
+    revealSchemaQueryPanel();
+    notifications.setStatus(error.message, "error");
+  }
+}
+
+function revealSchemaQueryPanel() {
+  elements.schemaQueryPanel.scrollIntoView({
+    behavior: "smooth",
+    block: "start",
+  });
 }
 
 function handleConvertJson() {
@@ -584,6 +676,12 @@ function handleKeyboardShortcuts(event) {
   if (event.shiftKey && key === "y") {
     event.preventDefault();
     revealConverterPanel();
+    return;
+  }
+
+  if (event.shiftKey && key === "q") {
+    event.preventDefault();
+    revealSchemaQueryPanel();
     return;
   }
 

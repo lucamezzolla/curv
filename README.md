@@ -75,6 +75,7 @@ Curv aims to become a complete JSON workspace for developers who need a fast, el
 | `Ctrl + Shift + N` / `Cmd + Shift + N` | Remove nulls |
 | `Ctrl + Shift + D` / `Cmd + Shift + D` | Jump to JSON Diff |
 | `Ctrl + Shift + Y` / `Cmd + Shift + Y` | Jump to converters |
+| `Ctrl + Shift + Q` / `Cmd + Shift + Q` | Jump to Schema & Query |
 | `Ctrl + Shift + C` / `Cmd + Shift + C` | Copy output |
 | `Ctrl + Backspace` / `Cmd + Backspace` | Clear workspace |
 | `Tab` | Indent selection |
@@ -108,6 +109,8 @@ app/
         diffEngine.js
         editorCommands.js
         formatter.js
+        queryTools.js
+        schemaGenerator.js
         transformer.js
         validator.js
       ui/
@@ -116,6 +119,7 @@ app/
         editor.js
         fileActions.js
         notifications.js
+        schemaQueryView.js
         theme.js
         treeView.js
         validationPanel.js
@@ -221,7 +225,7 @@ v0.1.0
 The current development track is:
 
 ```text
-v0.5.0 — Converters
+v0.6.0 — Schema & Query
 ```
 
 ## License

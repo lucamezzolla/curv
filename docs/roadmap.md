@@ -61,3 +61,12 @@
 - JSON to SQL CREATE TABLE
 - JSON to XML
 - JSON to SQL helpers
+
+
+## v0.6.0 — Schema & Query
+
+- JSON Schema generation
+- JSON path query
+- Flatten JSON
+- Unflatten JSON
+- Schema/query output copy

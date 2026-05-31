@@ -87,6 +87,7 @@
         <button id="removeNullsButton" class="button" title="Ctrl + Shift + N">Remove nulls</button>
         <button id="compareButton" class="button" title="Ctrl + Shift + D">Compare</button>
         <button id="converterJumpButton" class="button" title="Ctrl + Shift + Y">Convert</button>
+        <button id="schemaQueryJumpButton" class="button" title="Ctrl + Shift + Q">Schema & Query</button>
         <button id="copyButton" class="button" title="Ctrl + Shift + C">Copy output</button>
         <button id="downloadButton" class="button">Download</button>
 
@@ -147,6 +148,7 @@
       <span class="shortcut-item"><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>N</kbd> Remove nulls</span>
       <span class="shortcut-item"><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>D</kbd> Compare</span>
       <span class="shortcut-item"><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Y</kbd> Convert</span>
+      <span class="shortcut-item"><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Q</kbd> Schema & Query</span>
       <span class="shortcut-item"><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>C</kbd> Copy</span>
       <span class="shortcut-item"><kbd>Ctrl</kbd> + <kbd>Backspace</kbd> Clear</span>
       <span class="shortcut-item"><kbd>Tab</kbd> Indent</span>
@@ -175,6 +177,47 @@
         <span class="inspector-label">Depth</span>
         <strong id="depthValue">0</strong>
       </div>
+    </section>
+
+    <section id="schemaQueryPanel" class="schema-query-panel" aria-label="JSON schema and query tools">
+      <div class="schema-query-panel-header">
+        <div>
+          <span class="schema-query-eyebrow">Schema & Query</span>
+          <h2>Generate schemas and inspect JSON paths</h2>
+          <p>Generate a JSON Schema, run a path query, flatten JSON or rebuild flattened payloads.</p>
+        </div>
+
+        <div class="schema-query-actions">
+          <button id="generateSchemaButton" class="button button-primary" type="button">Generate schema</button>
+          <button id="flattenJsonButton" class="button" type="button">Flatten</button>
+          <button id="unflattenJsonButton" class="button" type="button">Unflatten</button>
+          <button id="copySchemaQueryButton" class="button" type="button">Copy</button>
+          <button id="clearSchemaQueryButton" class="button button-muted" type="button">Clear</button>
+        </div>
+      </div>
+
+      <div class="schema-query-bar">
+        <label class="schema-query-path-label" for="jsonPathInput">Path query</label>
+        <input
+          id="jsonPathInput"
+          class="schema-query-path-input"
+          type="text"
+          placeholder="$.author.links.paypal or $.features[0].id"
+        />
+        <button id="runJsonPathButton" class="button" type="button">Run query</button>
+      </div>
+
+      <div class="schema-query-meta">
+        <span id="schemaQueryStats">0 chars</span>
+      </div>
+
+      <textarea
+        id="schemaQueryOutput"
+        class="schema-query-output"
+        spellcheck="false"
+        readonly
+        placeholder="Schema, query result or flattened JSON will appear here."
+      ></textarea>
     </section>
 
     <section id="converterPanel" class="converter-panel" aria-label="JSON converters">
