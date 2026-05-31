@@ -8,8 +8,6 @@ Curv is a privacy-first, offline-ready JSON toolbox designed to help developers 
 
 ## Live Demo
 
-Curv is designed to be published on GitHub Pages:
-
 ```text
 https://lucamezzolla.github.io/curv/
 ```
