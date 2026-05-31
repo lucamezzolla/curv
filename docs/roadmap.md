@@ -25,6 +25,9 @@
 - Validation panel focus and flash feedback
 - Syntax highlighting
 - Theme preferences
+- JSON cleanup actions
+  - Sort keys
+  - Remove null values
 
 ## v0.3.0 — Tree View
 

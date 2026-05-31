@@ -23,6 +23,8 @@ Curv aims to become a complete JSON workspace for developers who need a fast, el
 - Browser-based JSON formatter
 - JSON minifier
 - JSON validation workflow
+- Deep JSON key sorting
+- Remove null values from objects
 - Automatic JSON validation while typing
 - Dedicated validation details panel
 - Validation panel focus and flash feedback
@@ -51,6 +53,8 @@ Curv aims to become a complete JSON workspace for developers who need a fast, el
 | `Ctrl + Enter` / `Cmd + Enter` | Format JSON |
 | `Ctrl + Shift + M` / `Cmd + Shift + M` | Minify JSON |
 | `Ctrl + Shift + V` / `Cmd + Shift + V` | Validate JSON |
+| `Ctrl + Shift + S` / `Cmd + Shift + S` | Sort keys |
+| `Ctrl + Shift + N` / `Cmd + Shift + N` | Remove nulls |
 | `Ctrl + Shift + C` / `Cmd + Shift + C` | Copy output |
 | `Ctrl + Backspace` / `Cmd + Backspace` | Clear workspace |
 | `Tab` | Indent selection |
@@ -82,6 +86,7 @@ app/
         analyzer.js
         editorCommands.js
         formatter.js
+        transformer.js
         validator.js
       ui/
         editor.js

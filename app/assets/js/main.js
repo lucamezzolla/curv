@@ -9,6 +9,10 @@ import {
   unindentSelection,
 } from "./core/editorCommands.js";
 import { formatJson, minifyJson } from "./core/formatter.js";
+import {
+  removeNullValues,
+  sortJsonKeys,
+} from "./core/transformer.js";
 import { validateJson } from "./core/validator.js";
 import { createJsonEditor } from "./ui/editor.js";
 import {
@@ -35,6 +39,8 @@ const elements = {
   formatButton: document.querySelector("#formatButton"),
   minifyButton: document.querySelector("#minifyButton"),
   validateButton: document.querySelector("#validateButton"),
+  sortKeysButton: document.querySelector("#sortKeysButton"),
+  removeNullsButton: document.querySelector("#removeNullsButton"),
   copyButton: document.querySelector("#copyButton"),
   downloadButton: document.querySelector("#downloadButton"),
   clearButton: document.querySelector("#clearButton"),
@@ -76,6 +82,8 @@ function initializeApp() {
   elements.formatButton.addEventListener("click", handleFormat);
   elements.minifyButton.addEventListener("click", handleMinify);
   elements.validateButton.addEventListener("click", handleValidate);
+  elements.sortKeysButton.addEventListener("click", handleSortKeys);
+  elements.removeNullsButton.addEventListener("click", handleRemoveNulls);
   elements.copyButton.addEventListener("click", handleCopy);
   elements.downloadButton.addEventListener("click", handleDownload);
   elements.clearButton.addEventListener("click", handleClear);
@@ -158,6 +166,56 @@ function handleValidate() {
   }
 
   notifications.setStatus(validation.message, "error");
+}
+
+function handleSortKeys() {
+  window.clearTimeout(autoValidationTimer);
+
+  try {
+    const transformedJson = sortJsonKeys(editor.getInput(), getIndentSize());
+    const validation = validateJson(transformedJson);
+
+    editor.setOutput(transformedJson);
+    updateStats();
+    updateInspectorFromValidation(validation);
+    validationPanel.setFromValidation(validation);
+    revealValidationPanel();
+    notifications.setStatus("JSON keys sorted successfully.", "success");
+  } catch (error) {
+    const validation = validateJson(editor.getInput());
+
+    editor.setOutput("");
+    updateStats();
+    updateInspectorFromValidation(validation);
+    validationPanel.setFromValidation(validation);
+    revealValidationPanel();
+    notifications.setStatus(error.message, "error");
+  }
+}
+
+function handleRemoveNulls() {
+  window.clearTimeout(autoValidationTimer);
+
+  try {
+    const transformedJson = removeNullValues(editor.getInput(), getIndentSize());
+    const validation = validateJson(transformedJson);
+
+    editor.setOutput(transformedJson);
+    updateStats();
+    updateInspectorFromValidation(validation);
+    validationPanel.setFromValidation(validation);
+    revealValidationPanel();
+    notifications.setStatus("Null values removed successfully.", "success");
+  } catch (error) {
+    const validation = validateJson(editor.getInput());
+
+    editor.setOutput("");
+    updateStats();
+    updateInspectorFromValidation(validation);
+    validationPanel.setFromValidation(validation);
+    revealValidationPanel();
+    notifications.setStatus(error.message, "error");
+  }
 }
 
 async function handleCopy() {
@@ -352,6 +410,18 @@ function handleKeyboardShortcuts(event) {
   if (event.shiftKey && key === "v") {
     event.preventDefault();
     handleValidate();
+    return;
+  }
+
+  if (event.shiftKey && key === "s") {
+    event.preventDefault();
+    handleSortKeys();
+    return;
+  }
+
+  if (event.shiftKey && key === "n") {
+    event.preventDefault();
+    handleRemoveNulls();
     return;
   }
 
