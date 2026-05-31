@@ -32,6 +32,9 @@ Curv aims to become a complete JSON workspace for developers who need a fast, el
 - JSON to CSV conversion
 - JSON to Markdown table conversion
 - JSON to query params conversion
+- JSON to Java record conversion
+- JSON to Java class conversion
+- JSON to SQL CREATE TABLE conversion
 - Copy left and right diff values
 - Automatic JSON validation while typing
 - Dedicated validation details panel

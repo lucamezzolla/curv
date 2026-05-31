@@ -57,6 +57,7 @@
 - JSON to CSV
 - JSON to Markdown table
 - JSON to query params
-- JSON to XML
 - JSON to Java records/classes
+- JSON to SQL CREATE TABLE
+- JSON to XML
 - JSON to SQL helpers
