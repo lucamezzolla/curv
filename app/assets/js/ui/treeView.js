@@ -16,8 +16,11 @@ export function createTreeView(elements, callbacks = {}) {
   let currentData = null;
   let nodeId = 0;
   let totalNodeCount = 0;
+  let selectedNodeId = null;
   const nodeValues = new Map();
   const nodePaths = new Map();
+  const nodeTypes = new Map();
+  const nodeLabels = new Map();
 
   elements.search.addEventListener("input", () => {
     renderCurrent({ flash: false });
@@ -47,6 +50,11 @@ export function createTreeView(elements, callbacks = {}) {
     const id = button.dataset.treeNodeId;
     const action = button.dataset.treeAction;
 
+    if (action === "select-node") {
+      selectNode(id);
+      return;
+    }
+
     if (action === "copy-path") {
       await copyValue(nodePaths.get(id), "Path copied.");
       return;
@@ -55,6 +63,22 @@ export function createTreeView(elements, callbacks = {}) {
     if (action === "copy-value") {
       await copyValue(formatCopyValue(nodeValues.get(id)), "Value copied.");
     }
+  });
+
+  elements.copySelectedPathButton.addEventListener("click", async () => {
+    if (!selectedNodeId) {
+      return;
+    }
+
+    await copyValue(nodePaths.get(selectedNodeId), "Selected path copied.");
+  });
+
+  elements.copySelectedValueButton.addEventListener("click", async () => {
+    if (!selectedNodeId) {
+      return;
+    }
+
+    await copyValue(formatCopyValue(nodeValues.get(selectedNodeId)), "Selected value copied.");
   });
 
   function render(data) {
@@ -66,9 +90,13 @@ export function createTreeView(elements, callbacks = {}) {
   function clear(message = "Validate JSON to generate the tree view.") {
     currentData = null;
     totalNodeCount = 0;
+    selectedNodeId = null;
     nodeValues.clear();
     nodePaths.clear();
+    nodeTypes.clear();
+    nodeLabels.clear();
     elements.container.innerHTML = "";
+    updateSelectionPanel(null);
     elements.resultStats.textContent = "No tree generated yet.";
     elements.empty.textContent = message;
     elements.empty.hidden = false;
@@ -78,6 +106,8 @@ export function createTreeView(elements, callbacks = {}) {
     nodeId = 0;
     nodeValues.clear();
     nodePaths.clear();
+    nodeTypes.clear();
+    nodeLabels.clear();
     elements.container.innerHTML = "";
 
     if (currentData === null || currentData === undefined) {
@@ -116,6 +146,8 @@ export function createTreeView(elements, callbacks = {}) {
 
     nodeValues.set(id, value);
     nodePaths.set(id, path);
+    nodeTypes.set(id, type);
+    nodeLabels.set(id, label);
 
     if (type === "object" || type === "array") {
       const entries = type === "array"
@@ -173,9 +205,12 @@ export function createTreeView(elements, callbacks = {}) {
   }
 
   function createNodeHeader(id, label, path, type, preview) {
-    const header = createElement("div", "tree-node-header");
+    const header = createElement("div", selectedNodeId === id ? "tree-node-header is-selected" : "tree-node-header");
 
-    const main = createElement("div", "tree-node-main");
+    const main = createElement("button", "tree-node-main tree-node-select");
+    main.type = "button";
+    main.dataset.treeAction = "select-node";
+    main.dataset.treeNodeId = id;
 
     const labelElement = createElement("span", "tree-node-label", label);
     const typeElement = createElement("span", `tree-node-type tree-node-type-${type}`, type);
@@ -209,6 +244,48 @@ export function createTreeView(elements, callbacks = {}) {
     button.dataset.treeNodeId = id;
 
     return button;
+  }
+
+  function selectNode(id) {
+    selectedNodeId = id;
+    updateSelectionPanel(id);
+    highlightSelectedNode();
+  }
+
+  function updateSelectionPanel(id) {
+    if (!id) {
+      elements.selectedTitle.textContent = "No node selected";
+      elements.selectedPath.textContent = "Select a node from the tree to inspect its path and value.";
+      elements.selectedType.textContent = "—";
+      elements.copySelectedPathButton.disabled = true;
+      elements.copySelectedValueButton.disabled = true;
+      return;
+    }
+
+    const type = nodeTypes.get(id);
+    const label = nodeLabels.get(id);
+    const path = nodePaths.get(id);
+    const value = nodeValues.get(id);
+
+    elements.selectedTitle.textContent = label;
+    elements.selectedPath.textContent = path;
+    elements.selectedType.textContent = type;
+    elements.copySelectedPathButton.disabled = false;
+    elements.copySelectedValueButton.disabled = false;
+    elements.selectedPath.title = getSelectionPreview(value, type);
+  }
+
+  function highlightSelectedNode() {
+    elements.container.querySelectorAll(".tree-node-header.is-selected").forEach((node) => {
+      node.classList.remove("is-selected");
+    });
+
+    if (!selectedNodeId) {
+      return;
+    }
+
+    const selectedButton = elements.container.querySelector(`[data-tree-node-id="${selectedNodeId}"][data-tree-action="select-node"]`);
+    selectedButton?.closest(".tree-node-header")?.classList.add("is-selected");
   }
 
   function setAllDetailsOpen(open) {
@@ -254,6 +331,18 @@ export function createTreeView(elements, callbacks = {}) {
     render,
     clear,
   };
+}
+
+function getSelectionPreview(value, type) {
+  if (type === "string") {
+    return value;
+  }
+
+  if (type === "object" || type === "array") {
+    return JSON.stringify(value, null, 2);
+  }
+
+  return String(value);
 }
 
 function countNodes(value) {

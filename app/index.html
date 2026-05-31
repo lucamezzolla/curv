@@ -181,6 +181,20 @@
         <span id="treeResultStats">No tree generated yet.</span>
       </div>
 
+      <section class="tree-selection" aria-label="Selected JSON node">
+        <div>
+          <span class="tree-selection-label">Selected node</span>
+          <strong id="treeSelectedTitle">No node selected</strong>
+          <p id="treeSelectedPath">Select a node from the tree to inspect its path and value.</p>
+        </div>
+
+        <div class="tree-selection-meta">
+          <span id="treeSelectedType" class="tree-selection-type">—</span>
+          <button id="copySelectedPathButton" class="button" type="button" disabled>Copy path</button>
+          <button id="copySelectedValueButton" class="button" type="button" disabled>Copy value</button>
+        </div>
+      </section>
+
       <p id="treeEmpty" class="tree-empty">Validate JSON to generate the tree view.</p>
       <div id="treeContainer" class="tree-container"></div>
     </section>

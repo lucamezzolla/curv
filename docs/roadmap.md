@@ -37,6 +37,7 @@
 - Clear tree search
 - Copy JSON path
 - Copy node value
+- Selected tree node details
 - Search keys and values
 
 ## v0.4.0 — Diff

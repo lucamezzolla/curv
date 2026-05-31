@@ -48,6 +48,7 @@ Curv aims to become a complete JSON workspace for developers who need a fast, el
 - Clear tree search
 - Copy JSON path
 - Copy JSON node value
+- Selected tree node details
 - Local-only processing
 - Modular JavaScript architecture
 - Responsive dark interface

@@ -66,6 +66,11 @@ const elements = {
   clearTreeSearchButton: document.querySelector("#clearTreeSearchButton"),
   expandTreeButton: document.querySelector("#expandTreeButton"),
   collapseTreeButton: document.querySelector("#collapseTreeButton"),
+  treeSelectedTitle: document.querySelector("#treeSelectedTitle"),
+  treeSelectedPath: document.querySelector("#treeSelectedPath"),
+  treeSelectedType: document.querySelector("#treeSelectedType"),
+  copySelectedPathButton: document.querySelector("#copySelectedPathButton"),
+  copySelectedValueButton: document.querySelector("#copySelectedValueButton"),
 };
 
 const editor = createJsonEditor(elements.input, elements.output);
@@ -95,6 +100,11 @@ const treeView = createTreeView(
     clearSearchButton: elements.clearTreeSearchButton,
     expandAllButton: elements.expandTreeButton,
     collapseAllButton: elements.collapseTreeButton,
+    selectedTitle: elements.treeSelectedTitle,
+    selectedPath: elements.treeSelectedPath,
+    selectedType: elements.treeSelectedType,
+    copySelectedPathButton: elements.copySelectedPathButton,
+    copySelectedValueButton: elements.copySelectedValueButton,
   },
   {
     onCopy: (message) => notifications.setStatus(message, "success"),
