@@ -166,9 +166,10 @@ select {
 .privacy-badge {
   display: inline-flex;
   align-items: center;
+  height: 36px;
   border: 1px solid rgba(52, 211, 153, 0.28);
   border-radius: 999px;
-  padding: 8px 12px;
+  padding: 0 12px;
   color: var(--color-success);
   background: rgba(52, 211, 153, 0.08);
   font-size: 0.9rem;
@@ -1312,3 +1313,61 @@ kbd {
     display: none;
   }
 }
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 18px;
+  padding: 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: rgba(17, 24, 44, 0.72);
+  backdrop-filter: blur(18px);
+  overflow: hidden;
+}
+
+.toolbar-group {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  min-width: 0;
+}
+
+.toolbar-group:first-child {
+  flex: 1 1 720px;
+}
+
+.toolbar-group:last-child {
+  flex: 0 1 auto;
+  margin-left: auto;
+}
+
+
+
+.toolbar .button,
+.toolbar .file-button {
+  padding-inline: 14px;
+}
+
+.toolbar .select {
+  max-width: 130px;
+}
+
+
+
+@media (max-width: 1180px) {
+  .toolbar {
+    align-items: stretch;
+  }
+
+  .toolbar-group:first-child,
+  .toolbar-group:last-child {
+    flex: 1 1 100%;
+    margin-left: 0;
+  }
+}
+
