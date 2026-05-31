@@ -161,6 +161,25 @@
       </div>
     </section>
 
+    <section class="tree-panel" aria-label="JSON tree view">
+      <div class="tree-panel-header">
+        <div>
+          <span class="tree-eyebrow">Tree View</span>
+          <h2>Explore JSON structure</h2>
+          <p>Validate JSON to generate an interactive tree with paths and values.</p>
+        </div>
+
+        <div class="tree-actions">
+          <input id="treeSearch" class="tree-search" type="search" placeholder="Search keys, values or paths" />
+          <button id="expandTreeButton" class="button">Expand all</button>
+          <button id="collapseTreeButton" class="button">Collapse all</button>
+        </div>
+      </div>
+
+      <p id="treeEmpty" class="tree-empty">Validate JSON to generate the tree view.</p>
+      <div id="treeContainer" class="tree-container"></div>
+    </section>
+
     <footer class="status-bar">
       <span id="statusMessage">Ready.</span>
     </footer>

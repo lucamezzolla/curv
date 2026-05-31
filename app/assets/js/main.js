@@ -21,6 +21,7 @@ import {
   readTextFile,
 } from "./ui/fileActions.js";
 import { createNotificationCenter } from "./ui/notifications.js";
+import { createTreeView } from "./ui/treeView.js";
 import { createValidationPanel } from "./ui/validationPanel.js";
 
 const AUTO_FORMAT_PASTE_THRESHOLD = 25000;
@@ -57,6 +58,11 @@ const elements = {
   validationLine: document.querySelector("#validationLine"),
   validationColumn: document.querySelector("#validationColumn"),
   validationPosition: document.querySelector("#validationPosition"),
+  treeContainer: document.querySelector("#treeContainer"),
+  treeEmpty: document.querySelector("#treeEmpty"),
+  treeSearch: document.querySelector("#treeSearch"),
+  expandTreeButton: document.querySelector("#expandTreeButton"),
+  collapseTreeButton: document.querySelector("#collapseTreeButton"),
 };
 
 const editor = createJsonEditor(elements.input, elements.output);
@@ -75,6 +81,19 @@ const validationPanel = createValidationPanel({
   column: elements.validationColumn,
   position: elements.validationPosition,
 });
+
+const treeView = createTreeView(
+  {
+    container: elements.treeContainer,
+    empty: elements.treeEmpty,
+    search: elements.treeSearch,
+    expandAllButton: elements.expandTreeButton,
+    collapseAllButton: elements.collapseTreeButton,
+  },
+  {
+    onCopy: (message) => notifications.setStatus(message, "success"),
+  }
+);
 
 let autoValidationTimer = null;
 
@@ -97,6 +116,7 @@ function initializeApp() {
   updateStats();
   updateInspector("Not checked", createEmptyJsonStats());
   validationPanel.setIdle();
+  treeView.clear();
   notifications.setStatus("Ready.", "neutral");
 }
 
@@ -256,6 +276,7 @@ function handleClear() {
   updateStats();
   updateInspector("Not checked", createEmptyJsonStats());
   validationPanel.setIdle();
+  treeView.clear();
   notifications.setStatus("Workspace cleared.", "neutral");
   editor.focusInput();
 }
@@ -277,6 +298,7 @@ async function handleFileUpload(event) {
     updateStats();
     updateInspector("Not checked", createEmptyJsonStats());
     validationPanel.setIdle();
+    treeView.clear();
 
     if (content.length > LARGE_INPUT_WARNING_THRESHOLD) {
       notifications.setStatus(`Loaded ${file.name}. Large file detected; automatic validation was skipped.`, "warning");
@@ -294,6 +316,7 @@ function handleInputChange() {
   updateStats();
   updateInspector("Not checked", createEmptyJsonStats());
   validationPanel.setIdle();
+  treeView.clear();
   scheduleAutomaticValidation();
 }
 
@@ -469,10 +492,12 @@ function updateStats() {
 function updateInspectorFromValidation(validation) {
   if (!validation.valid) {
     updateInspector("Invalid", createEmptyJsonStats());
+    treeView.clear("Fix validation errors to generate the tree view.");
     return;
   }
 
   updateInspector("Valid", analyzeJsonStructure(validation.data));
+  treeView.render(validation.data);
 }
 
 function updateInspector(validity, stats) {

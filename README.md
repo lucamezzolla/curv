@@ -42,6 +42,10 @@ Curv aims to become a complete JSON workspace for developers who need a fast, el
 - Configurable indentation
 - Input and output text statistics
 - Basic JSON structure analysis
+- Interactive JSON tree view
+- Tree search
+- Copy JSON path
+- Copy JSON node value
 - Local-only processing
 - Modular JavaScript architecture
 - Responsive dark interface
@@ -93,6 +97,7 @@ app/
         fileActions.js
         notifications.js
         theme.js
+        treeView.js
         validationPanel.js
 
 desktop/
@@ -196,7 +201,7 @@ v0.1.0
 The current development track is:
 
 ```text
-v0.2.0 — Editor Experience
+v0.3.0 — Tree View
 ```
 
 ## License

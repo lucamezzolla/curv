@@ -32,6 +32,7 @@
 ## v0.3.0 — Tree View
 
 - Expandable tree viewer
+- Tree search
 - Copy JSON path
 - Copy node value
 - Search keys and values
