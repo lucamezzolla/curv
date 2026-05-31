@@ -33,6 +33,8 @@
 
 - Expandable tree viewer
 - Tree search
+- Tree result counts
+- Clear tree search
 - Copy JSON path
 - Copy node value
 - Search keys and values

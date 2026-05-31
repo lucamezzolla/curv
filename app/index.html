@@ -161,7 +161,7 @@
       </div>
     </section>
 
-    <section class="tree-panel" aria-label="JSON tree view">
+    <section id="treePanel" class="tree-panel" aria-label="JSON tree view">
       <div class="tree-panel-header">
         <div>
           <span class="tree-eyebrow">Tree View</span>
@@ -171,9 +171,14 @@
 
         <div class="tree-actions">
           <input id="treeSearch" class="tree-search" type="search" placeholder="Search keys, values or paths" />
+          <button id="clearTreeSearchButton" class="button button-muted">Clear search</button>
           <button id="expandTreeButton" class="button">Expand all</button>
           <button id="collapseTreeButton" class="button">Collapse all</button>
         </div>
+      </div>
+
+      <div class="tree-meta">
+        <span id="treeResultStats">No tree generated yet.</span>
       </div>
 
       <p id="treeEmpty" class="tree-empty">Validate JSON to generate the tree view.</p>

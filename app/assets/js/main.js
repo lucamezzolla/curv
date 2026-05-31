@@ -58,9 +58,12 @@ const elements = {
   validationLine: document.querySelector("#validationLine"),
   validationColumn: document.querySelector("#validationColumn"),
   validationPosition: document.querySelector("#validationPosition"),
+  treePanel: document.querySelector("#treePanel"),
   treeContainer: document.querySelector("#treeContainer"),
   treeEmpty: document.querySelector("#treeEmpty"),
   treeSearch: document.querySelector("#treeSearch"),
+  treeResultStats: document.querySelector("#treeResultStats"),
+  clearTreeSearchButton: document.querySelector("#clearTreeSearchButton"),
   expandTreeButton: document.querySelector("#expandTreeButton"),
   collapseTreeButton: document.querySelector("#collapseTreeButton"),
 };
@@ -84,9 +87,12 @@ const validationPanel = createValidationPanel({
 
 const treeView = createTreeView(
   {
+    panel: elements.treePanel,
     container: elements.treeContainer,
     empty: elements.treeEmpty,
     search: elements.treeSearch,
+    resultStats: elements.treeResultStats,
+    clearSearchButton: elements.clearTreeSearchButton,
     expandAllButton: elements.expandTreeButton,
     collapseAllButton: elements.collapseTreeButton,
   },

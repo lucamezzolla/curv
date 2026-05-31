@@ -15,11 +15,18 @@ function createElement(tagName, className, textContent = "") {
 export function createTreeView(elements, callbacks = {}) {
   let currentData = null;
   let nodeId = 0;
+  let totalNodeCount = 0;
   const nodeValues = new Map();
   const nodePaths = new Map();
 
   elements.search.addEventListener("input", () => {
+    renderCurrent({ flash: false });
+  });
+
+  elements.clearSearchButton.addEventListener("click", () => {
+    elements.search.value = "";
     renderCurrent();
+    elements.search.focus();
   });
 
   elements.expandAllButton.addEventListener("click", () => {
@@ -52,19 +59,22 @@ export function createTreeView(elements, callbacks = {}) {
 
   function render(data) {
     currentData = data;
+    totalNodeCount = countNodes(data);
     renderCurrent();
   }
 
   function clear(message = "Validate JSON to generate the tree view.") {
     currentData = null;
+    totalNodeCount = 0;
     nodeValues.clear();
     nodePaths.clear();
     elements.container.innerHTML = "";
+    elements.resultStats.textContent = "No tree generated yet.";
     elements.empty.textContent = message;
     elements.empty.hidden = false;
   }
 
-  function renderCurrent() {
+  function renderCurrent({ flash = true } = {}) {
     nodeId = 0;
     nodeValues.clear();
     nodePaths.clear();
@@ -79,6 +89,9 @@ export function createTreeView(elements, callbacks = {}) {
     const rendered = renderNode(currentData, "$", "root", 0, query);
 
     if (!rendered) {
+      elements.resultStats.textContent = query
+        ? `0 matching nodes out of ${formatNumber(totalNodeCount)}.`
+        : `0 nodes.`;
       elements.empty.textContent = "No matching nodes found.";
       elements.empty.hidden = false;
       return;
@@ -86,6 +99,13 @@ export function createTreeView(elements, callbacks = {}) {
 
     elements.empty.hidden = true;
     elements.container.appendChild(rendered.element);
+    elements.resultStats.textContent = query
+      ? `${formatNumber(nodeValues.size)} matching nodes out of ${formatNumber(totalNodeCount)}.`
+      : `${formatNumber(totalNodeCount)} nodes in this JSON tree.`;
+
+    if (flash) {
+      flashPanel();
+    }
   }
 
   function renderNode(value, path, label, depth, query) {
@@ -197,6 +217,14 @@ export function createTreeView(elements, callbacks = {}) {
     });
   }
 
+  function flashPanel() {
+    elements.panel.classList.remove("is-flashing");
+
+    window.requestAnimationFrame(() => {
+      elements.panel.classList.add("is-flashing");
+    });
+  }
+
   async function copyValue(value, successMessage) {
     if (value === undefined) {
       return;
@@ -226,6 +254,22 @@ export function createTreeView(elements, callbacks = {}) {
     render,
     clear,
   };
+}
+
+function countNodes(value) {
+  if (Array.isArray(value)) {
+    return 1 + value.reduce((total, item) => total + countNodes(item), 0);
+  }
+
+  if (value !== null && typeof value === "object") {
+    return 1 + Object.values(value).reduce((total, item) => total + countNodes(item), 0);
+  }
+
+  return 1;
+}
+
+function formatNumber(value) {
+  return value.toLocaleString();
 }
 
 function getValueType(value) {
