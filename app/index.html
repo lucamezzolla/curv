@@ -191,6 +191,8 @@
           <button id="generateSchemaButton" class="button button-primary" type="button">Generate schema</button>
           <button id="flattenJsonButton" class="button" type="button">Flatten</button>
           <button id="unflattenJsonButton" class="button" type="button">Unflatten</button>
+          <button id="useSchemaQueryOutputButton" class="button" type="button">Use as input</button>
+          <button id="downloadSchemaQueryButton" class="button" type="button">Download</button>
           <button id="copySchemaQueryButton" class="button" type="button">Copy</button>
           <button id="clearSchemaQueryButton" class="button button-muted" type="button">Clear</button>
         </div>
@@ -202,7 +204,7 @@
           id="jsonPathInput"
           class="schema-query-path-input"
           type="text"
-          placeholder="$.author.links.paypal or $.features[0].id"
+          placeholder="Try $.author.links.paypal, $.features[0].id or $.project"
         />
         <button id="runJsonPathButton" class="button" type="button">Run query</button>
       </div>

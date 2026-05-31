@@ -15,6 +15,28 @@ export function createSchemaQueryView(elements, callbacks = {}) {
     callbacks.onUnflatten?.();
   });
 
+  elements.useAsInputButton.addEventListener("click", () => {
+    const value = elements.output.value;
+
+    if (!value) {
+      callbacks.onStatus?.("There is no schema/query output to use as input.", "error");
+      return;
+    }
+
+    callbacks.onUseAsInput?.(value);
+  });
+
+  elements.downloadButton.addEventListener("click", () => {
+    const value = elements.output.value;
+
+    if (!value) {
+      callbacks.onStatus?.("There is no schema/query output to download.", "error");
+      return;
+    }
+
+    callbacks.onDownload?.(value);
+  });
+
   elements.copyButton.addEventListener("click", async () => {
     const value = elements.output.value;
 
@@ -65,8 +87,13 @@ export function createSchemaQueryView(elements, callbacks = {}) {
     });
   }
 
+  function getOutput() {
+    return elements.output.value;
+  }
+
   return {
     getPathExpression,
+    getOutput,
     setOutput,
     clear,
   };

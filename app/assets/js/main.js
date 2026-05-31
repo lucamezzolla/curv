@@ -111,6 +111,8 @@ const elements = {
   runJsonPathButton: document.querySelector("#runJsonPathButton"),
   schemaQueryStats: document.querySelector("#schemaQueryStats"),
   schemaQueryOutput: document.querySelector("#schemaQueryOutput"),
+  useSchemaQueryOutputButton: document.querySelector("#useSchemaQueryOutputButton"),
+  downloadSchemaQueryButton: document.querySelector("#downloadSchemaQueryButton"),
 };
 
 const editor = createJsonEditor(elements.input, elements.output);
@@ -127,6 +129,8 @@ const schemaQueryView = createSchemaQueryView(
     runQueryButton: elements.runJsonPathButton,
     flattenButton: elements.flattenJsonButton,
     unflattenButton: elements.unflattenJsonButton,
+    useAsInputButton: elements.useSchemaQueryOutputButton,
+    downloadButton: elements.downloadSchemaQueryButton,
     copyButton: elements.copySchemaQueryButton,
     clearButton: elements.clearSchemaQueryButton,
     pathInput: elements.jsonPathInput,
@@ -138,6 +142,8 @@ const schemaQueryView = createSchemaQueryView(
     onRunQuery: handleRunJsonPath,
     onFlatten: handleFlattenJson,
     onUnflatten: handleUnflattenJson,
+    onUseAsInput: handleUseSchemaQueryOutputAsInput,
+    onDownload: handleDownloadSchemaQueryOutput,
     onStatus: (message, type) => notifications.setStatus(message, type),
   }
 );
@@ -403,6 +409,32 @@ function revealSchemaQueryPanel() {
     behavior: "smooth",
     block: "start",
   });
+}
+
+function handleUseSchemaQueryOutputAsInput(value) {
+  editor.setInput(value);
+  editor.setOutput("");
+  updateStats();
+  updateInspector("Not checked", createEmptyJsonStats());
+  validationPanel.setIdle();
+  treeView.clear();
+  scheduleAutomaticValidation();
+  notifications.setStatus("Schema/query output moved to input.", "success");
+  editor.focusInput();
+}
+
+function handleDownloadSchemaQueryOutput(value) {
+  downloadTextFile(createSchemaQueryFilename(), value, "application/json");
+  notifications.setStatus("Schema/query output downloaded successfully.", "success");
+}
+
+function createSchemaQueryFilename() {
+  const timestamp = new Date()
+    .toISOString()
+    .replaceAll(":", "-")
+    .replaceAll(".", "-");
+
+  return `curv-schema-query-${timestamp}.json`;
 }
 
 function handleConvertJson() {

@@ -70,3 +70,5 @@
 - Flatten JSON
 - Unflatten JSON
 - Schema/query output copy
+- Schema/query output download
+- Use schema/query output as input
