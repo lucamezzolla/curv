@@ -28,6 +28,10 @@ Curv aims to become a complete JSON workspace for developers who need a fast, el
 - Semantic JSON diff
 - Diff summary and path-level changes
 - Diff filtering by change type
+- JSON to YAML conversion
+- JSON to CSV conversion
+- JSON to Markdown table conversion
+- JSON to query params conversion
 - Copy left and right diff values
 - Automatic JSON validation while typing
 - Dedicated validation details panel
@@ -67,6 +71,7 @@ Curv aims to become a complete JSON workspace for developers who need a fast, el
 | `Ctrl + Shift + S` / `Cmd + Shift + S` | Sort keys |
 | `Ctrl + Shift + N` / `Cmd + Shift + N` | Remove nulls |
 | `Ctrl + Shift + D` / `Cmd + Shift + D` | Jump to JSON Diff |
+| `Ctrl + Shift + Y` / `Cmd + Shift + Y` | Jump to converters |
 | `Ctrl + Shift + C` / `Cmd + Shift + C` | Copy output |
 | `Ctrl + Backspace` / `Cmd + Backspace` | Clear workspace |
 | `Tab` | Indent selection |
@@ -96,12 +101,14 @@ app/
       main.js
       core/
         analyzer.js
+        converter.js
         diffEngine.js
         editorCommands.js
         formatter.js
         transformer.js
         validator.js
       ui/
+        converterView.js
         diffView.js
         editor.js
         fileActions.js
@@ -211,7 +218,7 @@ v0.1.0
 The current development track is:
 
 ```text
-v0.4.0 — JSON Diff
+v0.5.0 — Converters
 ```
 
 ## License

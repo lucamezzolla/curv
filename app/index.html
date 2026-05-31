@@ -86,6 +86,7 @@
         <button id="sortKeysButton" class="button" title="Ctrl + Shift + S">Sort keys</button>
         <button id="removeNullsButton" class="button" title="Ctrl + Shift + N">Remove nulls</button>
         <button id="compareButton" class="button" title="Ctrl + Shift + D">Compare</button>
+        <button id="converterJumpButton" class="button" title="Ctrl + Shift + Y">Convert</button>
         <button id="copyButton" class="button" title="Ctrl + Shift + C">Copy output</button>
         <button id="downloadButton" class="button">Download</button>
 
@@ -145,6 +146,7 @@
       <span class="shortcut-item"><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd> Sort keys</span>
       <span class="shortcut-item"><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>N</kbd> Remove nulls</span>
       <span class="shortcut-item"><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>D</kbd> Compare</span>
+      <span class="shortcut-item"><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Y</kbd> Convert</span>
       <span class="shortcut-item"><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>C</kbd> Copy</span>
       <span class="shortcut-item"><kbd>Ctrl</kbd> + <kbd>Backspace</kbd> Clear</span>
       <span class="shortcut-item"><kbd>Tab</kbd> Indent</span>
@@ -173,6 +175,41 @@
         <span class="inspector-label">Depth</span>
         <strong id="depthValue">0</strong>
       </div>
+    </section>
+
+    <section id="converterPanel" class="converter-panel" aria-label="JSON converters">
+      <div class="converter-panel-header">
+        <div>
+          <span class="converter-eyebrow">Converters</span>
+          <h2>Convert JSON into developer-friendly formats</h2>
+          <p>Use the main input JSON and convert it to YAML, CSV, Markdown table or query params.</p>
+        </div>
+
+        <div class="converter-actions">
+          <label class="select-label" for="converterTarget">Target</label>
+          <select id="converterTarget" class="select">
+            <option value="yaml">YAML</option>
+            <option value="csv">CSV</option>
+            <option value="markdown">Markdown table</option>
+            <option value="query-params">Query params</option>
+          </select>
+          <button id="convertButton" class="button button-primary" type="button">Convert</button>
+          <button id="copyConvertedButton" class="button" type="button">Copy</button>
+          <button id="clearConvertedButton" class="button button-muted" type="button">Clear</button>
+        </div>
+      </div>
+
+      <div class="converter-meta">
+        <span id="converterStats">0 chars</span>
+      </div>
+
+      <textarea
+        id="converterOutput"
+        class="converter-output"
+        spellcheck="false"
+        readonly
+        placeholder="Converted output will appear here."
+      ></textarea>
     </section>
 
     <section id="diffPanel" class="diff-panel" aria-label="JSON diff">

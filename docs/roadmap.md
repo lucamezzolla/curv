@@ -55,7 +55,8 @@
 
 - JSON to YAML
 - JSON to CSV
-- JSON to XML
 - JSON to Markdown table
+- JSON to query params
+- JSON to XML
 - JSON to Java records/classes
 - JSON to SQL helpers

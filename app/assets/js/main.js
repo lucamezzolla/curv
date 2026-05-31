@@ -9,12 +9,14 @@ import {
   unindentSelection,
 } from "./core/editorCommands.js";
 import { formatJson, minifyJson } from "./core/formatter.js";
+import { convertJson } from "./core/converter.js";
 import { compareJson } from "./core/diffEngine.js";
 import {
   removeNullValues,
   sortJsonKeys,
 } from "./core/transformer.js";
 import { validateJson } from "./core/validator.js";
+import { createConverterView } from "./ui/converterView.js";
 import { createDiffView } from "./ui/diffView.js";
 import { createJsonEditor } from "./ui/editor.js";
 import {
@@ -45,6 +47,7 @@ const elements = {
   sortKeysButton: document.querySelector("#sortKeysButton"),
   removeNullsButton: document.querySelector("#removeNullsButton"),
   compareButton: document.querySelector("#compareButton"),
+  converterJumpButton: document.querySelector("#converterJumpButton"),
   copyButton: document.querySelector("#copyButton"),
   downloadButton: document.querySelector("#downloadButton"),
   clearButton: document.querySelector("#clearButton"),
@@ -83,6 +86,13 @@ const elements = {
   diffFilterButtons: document.querySelectorAll("[data-diff-filter]"),
   diffEmpty: document.querySelector("#diffEmpty"),
   diffResults: document.querySelector("#diffResults"),
+  converterPanel: document.querySelector("#converterPanel"),
+  converterTarget: document.querySelector("#converterTarget"),
+  convertButton: document.querySelector("#convertButton"),
+  copyConvertedButton: document.querySelector("#copyConvertedButton"),
+  clearConvertedButton: document.querySelector("#clearConvertedButton"),
+  converterStats: document.querySelector("#converterStats"),
+  converterOutput: document.querySelector("#converterOutput"),
 };
 
 const editor = createJsonEditor(elements.input, elements.output);
@@ -90,6 +100,22 @@ const editor = createJsonEditor(elements.input, elements.output);
 const notifications = createNotificationCenter(
   elements.statusBar,
   elements.statusMessage
+);
+
+const converterView = createConverterView(
+  {
+    panel: elements.converterPanel,
+    targetFormat: elements.converterTarget,
+    convertButton: elements.convertButton,
+    copyButton: elements.copyConvertedButton,
+    clearButton: elements.clearConvertedButton,
+    stats: elements.converterStats,
+    output: elements.converterOutput,
+  },
+  {
+    onConvert: handleConvertJson,
+    onStatus: (message, type) => notifications.setStatus(message, type),
+  }
 );
 
 const validationPanel = createValidationPanel({
@@ -150,6 +176,7 @@ function initializeApp() {
   elements.sortKeysButton.addEventListener("click", handleSortKeys);
   elements.removeNullsButton.addEventListener("click", handleRemoveNulls);
   elements.compareButton.addEventListener("click", revealDiffPanel);
+  elements.converterJumpButton.addEventListener("click", revealConverterPanel);
   elements.runDiffButton.addEventListener("click", handleCompareJson);
   elements.copyButton.addEventListener("click", handleCopy);
   elements.downloadButton.addEventListener("click", handleDownload);
@@ -284,6 +311,32 @@ function handleRemoveNulls() {
     revealValidationPanel();
     notifications.setStatus(error.message, "error");
   }
+}
+
+function handleConvertJson() {
+  try {
+    const converted = convertJson(editor.getInput(), converterView.getTargetFormat());
+
+    converterView.setOutput(converted);
+    revealConverterPanel();
+
+    if (!converted) {
+      notifications.setStatus("Conversion completed with empty output.", "warning");
+      return;
+    }
+
+    notifications.setStatus("JSON converted successfully.", "success");
+  } catch (error) {
+    revealConverterPanel();
+    notifications.setStatus(error.message, "error");
+  }
+}
+
+function revealConverterPanel() {
+  elements.converterPanel.scrollIntoView({
+    behavior: "smooth",
+    block: "start",
+  });
 }
 
 function handleCompareJson() {
@@ -525,6 +578,12 @@ function handleKeyboardShortcuts(event) {
   if (event.shiftKey && key === "d") {
     event.preventDefault();
     revealDiffPanel();
+    return;
+  }
+
+  if (event.shiftKey && key === "y") {
+    event.preventDefault();
+    revealConverterPanel();
     return;
   }
 
