@@ -40,10 +40,13 @@
 - Selected tree node details
 - Search keys and values
 
-## v0.4.0 — Diff
+## v0.4.0 — JSON Diff
 
-- Side-by-side JSON diff
 - Semantic JSON comparison
+- Path-level differences
+- Added, removed, changed and type-changed markers
+- Copy diff path
+- Side-by-side value previews
 - Ignore key order option
 
 ## v0.5.0 — Converters

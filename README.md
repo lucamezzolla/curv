@@ -25,6 +25,8 @@ Curv aims to become a complete JSON workspace for developers who need a fast, el
 - JSON validation workflow
 - Deep JSON key sorting
 - Remove null values from objects
+- Semantic JSON diff
+- Diff summary and path-level changes
 - Automatic JSON validation while typing
 - Dedicated validation details panel
 - Validation panel focus and flash feedback
@@ -62,6 +64,7 @@ Curv aims to become a complete JSON workspace for developers who need a fast, el
 | `Ctrl + Shift + V` / `Cmd + Shift + V` | Validate JSON |
 | `Ctrl + Shift + S` / `Cmd + Shift + S` | Sort keys |
 | `Ctrl + Shift + N` / `Cmd + Shift + N` | Remove nulls |
+| `Ctrl + Shift + D` / `Cmd + Shift + D` | Jump to JSON Diff |
 | `Ctrl + Shift + C` / `Cmd + Shift + C` | Copy output |
 | `Ctrl + Backspace` / `Cmd + Backspace` | Clear workspace |
 | `Tab` | Indent selection |
@@ -91,11 +94,13 @@ app/
       main.js
       core/
         analyzer.js
+        diffEngine.js
         editorCommands.js
         formatter.js
         transformer.js
         validator.js
       ui/
+        diffView.js
         editor.js
         fileActions.js
         notifications.js
@@ -204,7 +209,7 @@ v0.1.0
 The current development track is:
 
 ```text
-v0.3.0 — Tree View
+v0.4.0 — JSON Diff
 ```
 
 ## License

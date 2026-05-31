@@ -9,11 +9,13 @@ import {
   unindentSelection,
 } from "./core/editorCommands.js";
 import { formatJson, minifyJson } from "./core/formatter.js";
+import { compareJson } from "./core/diffEngine.js";
 import {
   removeNullValues,
   sortJsonKeys,
 } from "./core/transformer.js";
 import { validateJson } from "./core/validator.js";
+import { createDiffView } from "./ui/diffView.js";
 import { createJsonEditor } from "./ui/editor.js";
 import {
   createOutputFilename,
@@ -42,6 +44,7 @@ const elements = {
   validateButton: document.querySelector("#validateButton"),
   sortKeysButton: document.querySelector("#sortKeysButton"),
   removeNullsButton: document.querySelector("#removeNullsButton"),
+  compareButton: document.querySelector("#compareButton"),
   copyButton: document.querySelector("#copyButton"),
   downloadButton: document.querySelector("#downloadButton"),
   clearButton: document.querySelector("#clearButton"),
@@ -71,6 +74,14 @@ const elements = {
   treeSelectedType: document.querySelector("#treeSelectedType"),
   copySelectedPathButton: document.querySelector("#copySelectedPathButton"),
   copySelectedValueButton: document.querySelector("#copySelectedValueButton"),
+  diffPanel: document.querySelector("#diffPanel"),
+  diffLeftInput: document.querySelector("#diffLeftInput"),
+  diffRightInput: document.querySelector("#diffRightInput"),
+  runDiffButton: document.querySelector("#runDiffButton"),
+  clearDiffButton: document.querySelector("#clearDiffButton"),
+  diffSummary: document.querySelector("#diffSummary"),
+  diffEmpty: document.querySelector("#diffEmpty"),
+  diffResults: document.querySelector("#diffResults"),
 };
 
 const editor = createJsonEditor(elements.input, elements.output);
@@ -89,6 +100,23 @@ const validationPanel = createValidationPanel({
   column: elements.validationColumn,
   position: elements.validationPosition,
 });
+
+const diffView = createDiffView(
+  {
+    panel: elements.diffPanel,
+    left: elements.diffLeftInput,
+    right: elements.diffRightInput,
+    runButton: elements.runDiffButton,
+    clearButton: elements.clearDiffButton,
+    summary: elements.diffSummary,
+    empty: elements.diffEmpty,
+    results: elements.diffResults,
+  },
+  {
+    onCopy: (message) => notifications.setStatus(message, "success"),
+    onClear: () => notifications.setStatus("Diff workspace cleared.", "neutral"),
+  }
+);
 
 const treeView = createTreeView(
   {
@@ -119,6 +147,8 @@ function initializeApp() {
   elements.validateButton.addEventListener("click", handleValidate);
   elements.sortKeysButton.addEventListener("click", handleSortKeys);
   elements.removeNullsButton.addEventListener("click", handleRemoveNulls);
+  elements.compareButton.addEventListener("click", revealDiffPanel);
+  elements.runDiffButton.addEventListener("click", handleCompareJson);
   elements.copyButton.addEventListener("click", handleCopy);
   elements.downloadButton.addEventListener("click", handleDownload);
   elements.clearButton.addEventListener("click", handleClear);
@@ -252,6 +282,32 @@ function handleRemoveNulls() {
     revealValidationPanel();
     notifications.setStatus(error.message, "error");
   }
+}
+
+function handleCompareJson() {
+  try {
+    const result = compareJson(diffView.getLeftInput(), diffView.getRightInput());
+
+    diffView.render(result);
+    revealDiffPanel();
+
+    if (result.summary.total === 0) {
+      notifications.setStatus("JSON documents are semantically equal.", "success");
+      return;
+    }
+
+    notifications.setStatus(`${result.summary.total} differences found.`, "warning");
+  } catch (error) {
+    notifications.setStatus(error.message, "error");
+    revealDiffPanel();
+  }
+}
+
+function revealDiffPanel() {
+  elements.diffPanel.scrollIntoView({
+    behavior: "smooth",
+    block: "start",
+  });
 }
 
 async function handleCopy() {
@@ -461,6 +517,12 @@ function handleKeyboardShortcuts(event) {
   if (event.shiftKey && key === "n") {
     event.preventDefault();
     handleRemoveNulls();
+    return;
+  }
+
+  if (event.shiftKey && key === "d") {
+    event.preventDefault();
+    revealDiffPanel();
     return;
   }
 

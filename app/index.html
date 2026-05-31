@@ -73,6 +73,7 @@
         <button id="validateButton" class="button" title="Ctrl + Shift + V">Validate</button>
         <button id="sortKeysButton" class="button" title="Ctrl + Shift + S">Sort keys</button>
         <button id="removeNullsButton" class="button" title="Ctrl + Shift + N">Remove nulls</button>
+        <button id="compareButton" class="button" title="Ctrl + Shift + D">Compare</button>
         <button id="copyButton" class="button" title="Ctrl + Shift + C">Copy output</button>
         <button id="downloadButton" class="button">Download</button>
 
@@ -131,6 +132,7 @@
       <span class="shortcut-item"><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> Validate</span>
       <span class="shortcut-item"><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd> Sort keys</span>
       <span class="shortcut-item"><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>N</kbd> Remove nulls</span>
+      <span class="shortcut-item"><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>D</kbd> Compare</span>
       <span class="shortcut-item"><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>C</kbd> Copy</span>
       <span class="shortcut-item"><kbd>Ctrl</kbd> + <kbd>Backspace</kbd> Clear</span>
       <span class="shortcut-item"><kbd>Tab</kbd> Indent</span>
@@ -159,6 +161,37 @@
         <span class="inspector-label">Depth</span>
         <strong id="depthValue">0</strong>
       </div>
+    </section>
+
+    <section id="diffPanel" class="diff-panel" aria-label="JSON diff">
+      <div class="diff-panel-header">
+        <div>
+          <span class="diff-eyebrow">JSON Diff</span>
+          <h2>Compare two JSON documents</h2>
+          <p>Paste two JSON payloads and compare them semantically by path.</p>
+        </div>
+
+        <div class="diff-actions">
+          <button id="runDiffButton" class="button button-primary" type="button">Compare JSON</button>
+          <button id="clearDiffButton" class="button button-muted" type="button">Clear diff</button>
+        </div>
+      </div>
+
+      <div class="diff-editors">
+        <label class="diff-editor-panel">
+          <span>Left JSON</span>
+          <textarea id="diffLeftInput" class="diff-editor" spellcheck="false" placeholder='{"name":"left"}'></textarea>
+        </label>
+
+        <label class="diff-editor-panel">
+          <span>Right JSON</span>
+          <textarea id="diffRightInput" class="diff-editor" spellcheck="false" placeholder='{"name":"right"}'></textarea>
+        </label>
+      </div>
+
+      <div class="diff-summary" id="diffSummary">No comparison yet.</div>
+      <p id="diffEmpty" class="tree-empty">Compare two JSON documents to see semantic differences.</p>
+      <div id="diffResults" class="diff-results"></div>
     </section>
 
     <section id="treePanel" class="tree-panel" aria-label="JSON tree view">
