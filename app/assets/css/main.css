@@ -84,6 +84,32 @@ select {
   color: var(--color-muted);
 }
 
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.support-badge {
+  display: inline-flex;
+  align-items: center;
+  line-height: 0;
+  transition: transform 140ms ease, opacity 140ms ease;
+}
+
+.support-badge:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.support-badge img {
+  display: block;
+  height: 28px;
+}
+
 .privacy-badge {
   display: inline-flex;
   align-items: center;
