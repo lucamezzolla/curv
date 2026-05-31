@@ -80,6 +80,7 @@ const elements = {
   runDiffButton: document.querySelector("#runDiffButton"),
   clearDiffButton: document.querySelector("#clearDiffButton"),
   diffSummary: document.querySelector("#diffSummary"),
+  diffFilterButtons: document.querySelectorAll("[data-diff-filter]"),
   diffEmpty: document.querySelector("#diffEmpty"),
   diffResults: document.querySelector("#diffResults"),
 };
@@ -109,6 +110,7 @@ const diffView = createDiffView(
     runButton: elements.runDiffButton,
     clearButton: elements.clearDiffButton,
     summary: elements.diffSummary,
+    filterButtons: elements.diffFilterButtons,
     empty: elements.diffEmpty,
     results: elements.diffResults,
   },

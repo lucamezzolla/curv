@@ -46,6 +46,8 @@
 - Path-level differences
 - Added, removed, changed and type-changed markers
 - Copy diff path
+- Diff filtering by change type
+- Copy left and right diff values
 - Side-by-side value previews
 - Ignore key order option
 

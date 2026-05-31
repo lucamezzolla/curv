@@ -8,11 +8,23 @@ const CHANGE_LABELS = {
 };
 
 export function createDiffView(elements, callbacks = {}) {
+  let currentChanges = [];
+  let currentSummary = null;
+  let activeFilter = "all";
+
   elements.clearButton.addEventListener("click", () => {
     elements.left.value = "";
     elements.right.value = "";
     clear();
     callbacks.onClear?.();
+  });
+
+  elements.filterButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      activeFilter = button.dataset.diffFilter;
+      updateActiveFilterButton();
+      renderChanges(currentChanges);
+    });
   });
 
   elements.results.addEventListener("click", async (event) => {
@@ -24,9 +36,9 @@ export function createDiffView(elements, callbacks = {}) {
 
     try {
       await navigator.clipboard.writeText(button.dataset.diffCopy);
-      callbacks.onCopy?.("Diff path copied.");
+      callbacks.onCopy?.(button.dataset.diffCopyMessage ?? "Diff value copied.");
     } catch {
-      callbacks.onCopy?.("Unable to copy diff path.");
+      callbacks.onCopy?.("Unable to copy diff value.");
     }
   });
 
@@ -39,12 +51,20 @@ export function createDiffView(elements, callbacks = {}) {
   }
 
   function render(result) {
+    currentChanges = result.changes;
+    currentSummary = result.summary;
+    activeFilter = "all";
+    updateActiveFilterButton();
     renderSummary(result.summary);
     renderChanges(result.changes);
     flash();
   }
 
   function clear() {
+    currentChanges = [];
+    currentSummary = null;
+    activeFilter = "all";
+    updateActiveFilterButton();
     elements.summary.textContent = "No comparison yet.";
     elements.results.innerHTML = "";
     elements.empty.hidden = false;
@@ -63,15 +83,27 @@ export function createDiffView(elements, callbacks = {}) {
   function renderChanges(changes) {
     elements.results.innerHTML = "";
 
+    const filteredChanges = activeFilter === "all"
+      ? changes
+      : changes.filter((change) => change.type === activeFilter);
+
+    updateFilteredSummary(filteredChanges.length);
+
     if (changes.length === 0) {
       elements.empty.hidden = false;
       elements.empty.textContent = "The two JSON documents are semantically equal.";
       return;
     }
 
+    if (filteredChanges.length === 0) {
+      elements.empty.hidden = false;
+      elements.empty.textContent = "No differences match the selected filter.";
+      return;
+    }
+
     elements.empty.hidden = true;
 
-    for (const change of changes) {
+    for (const change of filteredChanges) {
       elements.results.appendChild(createChangeItem(change));
     }
   }
@@ -104,8 +136,8 @@ export function createDiffView(elements, callbacks = {}) {
     const values = document.createElement("div");
     values.className = "diff-values";
 
-    values.appendChild(createValueBlock("Left", change.leftValue, change.leftType));
-    values.appendChild(createValueBlock("Right", change.rightValue, change.rightType));
+    values.appendChild(createValueBlock("Left", change.leftValue, change.leftType, "left"));
+    values.appendChild(createValueBlock("Right", change.rightValue, change.rightType, "right"));
 
     item.appendChild(header);
     item.appendChild(values);
@@ -113,7 +145,7 @@ export function createDiffView(elements, callbacks = {}) {
     return item;
   }
 
-  function createValueBlock(label, value, type) {
+  function createValueBlock(label, value, type, side) {
     const block = document.createElement("div");
     block.className = "diff-value-block";
 
@@ -124,10 +156,56 @@ export function createDiffView(elements, callbacks = {}) {
     const pre = document.createElement("pre");
     pre.textContent = formatDiffValue(value);
 
+    const actions = document.createElement("div");
+    actions.className = "diff-copy-actions";
+
+    const copyButton = document.createElement("button");
+    copyButton.className = "diff-value-copy-button";
+    copyButton.type = "button";
+    copyButton.textContent = `Copy ${side}`;
+    copyButton.dataset.diffCopy = formatCopyPayload(value);
+    copyButton.dataset.diffCopyMessage = `${label} value copied.`;
+    copyButton.disabled = value === undefined;
+
+    actions.appendChild(copyButton);
+
     block.appendChild(title);
     block.appendChild(pre);
+    block.appendChild(actions);
 
     return block;
+  }
+
+  function updateFilteredSummary(filteredCount) {
+    if (!currentSummary) {
+      return;
+    }
+
+    if (currentSummary.total === 0) {
+      elements.summary.textContent = "No differences found.";
+      return;
+    }
+
+    const filterLabel = activeFilter === "all" ? "all differences" : `${activeFilter} differences`;
+    elements.summary.textContent = `${filteredCount} shown (${filterLabel}) · ${currentSummary.total} total · ${currentSummary.added} added · ${currentSummary.removed} removed · ${currentSummary.changed} changed · ${currentSummary["type-changed"]} type changed`;
+  }
+
+  function updateActiveFilterButton() {
+    elements.filterButtons.forEach((button) => {
+      button.classList.toggle("is-active", button.dataset.diffFilter === activeFilter);
+    });
+  }
+
+  function formatCopyPayload(value) {
+    if (value === undefined) {
+      return "";
+    }
+
+    if (typeof value === "string") {
+      return value;
+    }
+
+    return JSON.stringify(value, null, 2);
   }
 
   function flash() {

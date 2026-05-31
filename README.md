@@ -27,6 +27,8 @@ Curv aims to become a complete JSON workspace for developers who need a fast, el
 - Remove null values from objects
 - Semantic JSON diff
 - Diff summary and path-level changes
+- Diff filtering by change type
+- Copy left and right diff values
 - Automatic JSON validation while typing
 - Dedicated validation details panel
 - Validation panel focus and flash feedback

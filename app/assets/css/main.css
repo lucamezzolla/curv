@@ -554,6 +554,57 @@ kbd {
   font-weight: 800;
 }
 
+
+.diff-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.diff-filter-button {
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  color: var(--color-muted);
+  background: rgba(21, 30, 54, 0.72);
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 900;
+  transition: border-color 140ms ease, color 140ms ease, background-color 140ms ease;
+}
+
+.diff-filter-button:hover,
+.diff-filter-button.is-active {
+  color: var(--color-text);
+  border-color: rgba(139, 92, 246, 0.44);
+  background: rgba(139, 92, 246, 0.16);
+}
+
+.diff-copy-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.diff-value-copy-button {
+  min-height: 28px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  color: var(--color-muted);
+  background: rgba(21, 30, 54, 0.78);
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.diff-value-copy-button:hover {
+  color: var(--color-text);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
 .diff-results {
   display: grid;
   gap: 12px;
