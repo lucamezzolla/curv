@@ -31,7 +31,9 @@ import {
   readTextFile,
 } from "./ui/fileActions.js";
 import { createNotificationCenter } from "./ui/notifications.js";
+import { createPreferencesStore } from "./ui/preferences.js";
 import { createSchemaQueryView } from "./ui/schemaQueryView.js";
+import { createThemeController } from "./ui/theme.js";
 import { createTreeView } from "./ui/treeView.js";
 import { createValidationPanel } from "./ui/validationPanel.js";
 
@@ -46,6 +48,7 @@ const elements = {
   outputStats: document.querySelector("#outputStats"),
   statusBar: document.querySelector(".status-bar"),
   statusMessage: document.querySelector("#statusMessage"),
+  themeMode: document.querySelector("#themeMode"),
   indentSize: document.querySelector("#indentSize"),
   autoFormatPaste: document.querySelector("#autoFormatPaste"),
   formatButton: document.querySelector("#formatButton"),
@@ -98,6 +101,7 @@ const elements = {
   converterTarget: document.querySelector("#converterTarget"),
   convertButton: document.querySelector("#convertButton"),
   copyConvertedButton: document.querySelector("#copyConvertedButton"),
+  downloadConvertedButton: document.querySelector("#downloadConvertedButton"),
   clearConvertedButton: document.querySelector("#clearConvertedButton"),
   converterStats: document.querySelector("#converterStats"),
   converterOutput: document.querySelector("#converterOutput"),
@@ -121,6 +125,9 @@ const notifications = createNotificationCenter(
   elements.statusBar,
   elements.statusMessage
 );
+
+const preferences = createPreferencesStore();
+const themeController = createThemeController(elements.themeMode, preferences);
 
 const schemaQueryView = createSchemaQueryView(
   {
@@ -154,12 +161,14 @@ const converterView = createConverterView(
     targetFormat: elements.converterTarget,
     convertButton: elements.convertButton,
     copyButton: elements.copyConvertedButton,
+    downloadButton: elements.downloadConvertedButton,
     clearButton: elements.clearConvertedButton,
     stats: elements.converterStats,
     output: elements.converterOutput,
   },
   {
     onConvert: handleConvertJson,
+    onDownload: handleDownloadConvertedOutput,
     onStatus: (message, type) => notifications.setStatus(message, type),
   }
 );
@@ -216,6 +225,9 @@ const treeView = createTreeView(
 let autoValidationTimer = null;
 
 function initializeApp() {
+  applySavedPreferences();
+  themeController.initialize();
+
   elements.formatButton.addEventListener("click", handleFormat);
   elements.minifyButton.addEventListener("click", handleMinify);
   elements.validateButton.addEventListener("click", handleValidate);
@@ -229,6 +241,9 @@ function initializeApp() {
   elements.downloadButton.addEventListener("click", handleDownload);
   elements.clearButton.addEventListener("click", handleClear);
   elements.fileInput.addEventListener("change", handleFileUpload);
+  elements.indentSize.addEventListener("change", savePreferences);
+  elements.autoFormatPaste.addEventListener("change", savePreferences);
+  elements.converterTarget.addEventListener("change", savePreferences);
 
   editor.onInput(handleInputChange);
   editor.onPaste(handlePaste);
@@ -358,6 +373,89 @@ function handleRemoveNulls() {
     revealValidationPanel();
     notifications.setStatus(error.message, "error");
   }
+}
+
+function handleDownloadConvertedOutput(value, targetFormat) {
+  const metadata = getConverterDownloadMetadata(targetFormat);
+
+  downloadTextFile(
+    createTimestampedFilename("curv-converted", metadata.extension),
+    value,
+    metadata.mimeType
+  );
+
+  notifications.setStatus("Converted output downloaded successfully.", "success");
+}
+
+function getConverterDownloadMetadata(targetFormat) {
+  const metadataByFormat = {
+    yaml: {
+      extension: "yaml",
+      mimeType: "application/x-yaml",
+    },
+    csv: {
+      extension: "csv",
+      mimeType: "text/csv",
+    },
+    markdown: {
+      extension: "md",
+      mimeType: "text/markdown",
+    },
+    "query-params": {
+      extension: "txt",
+      mimeType: "text/plain",
+    },
+    "java-record": {
+      extension: "java",
+      mimeType: "text/x-java-source",
+    },
+    "java-class": {
+      extension: "java",
+      mimeType: "text/x-java-source",
+    },
+    "sql-table": {
+      extension: "sql",
+      mimeType: "application/sql",
+    },
+  };
+
+  return metadataByFormat[targetFormat] ?? {
+    extension: "txt",
+    mimeType: "text/plain",
+  };
+}
+
+function createTimestampedFilename(prefix, extension) {
+  const timestamp = new Date()
+    .toISOString()
+    .replaceAll(":", "-")
+    .replaceAll(".", "-");
+
+  return `${prefix}-${timestamp}.${extension}`;
+}
+
+function applySavedPreferences() {
+  const savedIndentSize = preferences.get("indentSize", elements.indentSize.value);
+  const savedAutoFormatPaste = preferences.get("autoFormatPaste", elements.autoFormatPaste.checked);
+  const savedConverterTarget = preferences.get("converterTarget", elements.converterTarget.value);
+
+  if (["2", "4"].includes(String(savedIndentSize))) {
+    elements.indentSize.value = String(savedIndentSize);
+  }
+
+  elements.autoFormatPaste.checked = Boolean(savedAutoFormatPaste);
+
+  if ([...elements.converterTarget.options].some((option) => option.value === savedConverterTarget)) {
+    elements.converterTarget.value = savedConverterTarget;
+  }
+}
+
+function savePreferences() {
+  preferences.setMany({
+    indentSize: elements.indentSize.value,
+    autoFormatPaste: elements.autoFormatPaste.checked,
+    converterTarget: elements.converterTarget.value,
+  });
 }
 
 function handleGenerateSchema() {

@@ -72,3 +72,13 @@
 - Schema/query output copy
 - Schema/query output download
 - Use schema/query output as input
+
+
+## v0.7.0 — Export & Preferences
+
+- Persistent user preferences
+- Light, dark and system theme modes
+- Remember indentation preference
+- Remember auto-format paste preference
+- Remember converter target preference
+- Download converted output with format-aware file extensions

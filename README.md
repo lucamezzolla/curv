@@ -119,6 +119,7 @@ app/
         editor.js
         fileActions.js
         notifications.js
+        preferences.js
         schemaQueryView.js
         theme.js
         treeView.js
@@ -225,7 +226,7 @@ v0.1.0
 The current development track is:
 
 ```text
-v0.6.0 — Schema & Query
+v0.7.0 — Export & Preferences
 ```
 
 ## License

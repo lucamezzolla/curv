@@ -21,6 +21,17 @@ export function createConverterView(elements, callbacks = {}) {
     }
   });
 
+  elements.downloadButton.addEventListener("click", () => {
+    const value = elements.output.value;
+
+    if (!value) {
+      callbacks.onStatus?.("There is no converted output to download.", "error");
+      return;
+    }
+
+    callbacks.onDownload?.(value, getTargetFormat());
+  });
+
   elements.clearButton.addEventListener("click", () => {
     clear();
     callbacks.onStatus?.("Converter output cleared.", "neutral");

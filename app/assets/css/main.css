@@ -17,6 +17,30 @@
   --font-mono: "JetBrains Mono", "Fira Code", Consolas, Monaco, monospace;
 }
 
+
+:root[data-theme="light"] {
+  --color-bg: #f5f7fb;
+  --color-surface: #ffffff;
+  --color-surface-soft: #eef2ff;
+  --color-border: rgba(15, 23, 42, 0.12);
+  --color-text: #0f172a;
+  --color-muted: #64748b;
+  --color-primary: #7c3aed;
+  --color-primary-hover: #6d28d9;
+  --color-danger: #e11d48;
+  --color-success: #059669;
+  --color-warning: #b45309;
+  --shadow-soft: 0 24px 80px rgba(15, 23, 42, 0.13);
+}
+
+:root[data-theme="light"] body {
+  background:
+    radial-gradient(circle at top left, rgba(124, 58, 237, 0.16), transparent 32rem),
+    radial-gradient(circle at bottom right, rgba(5, 150, 105, 0.1), transparent 28rem),
+    var(--color-bg);
+}
+
+
 * {
   box-sizing: border-box;
 }
@@ -108,6 +132,35 @@ select {
 .support-badge img {
   display: block;
   height: 28px;
+}
+
+
+.theme-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  color: var(--color-muted);
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.theme-select {
+  border: 0;
+  outline: none;
+  color: var(--color-text);
+  background: transparent;
+  font-size: 0.82rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.theme-select option {
+  color: #0f172a;
 }
 
 .privacy-badge {
